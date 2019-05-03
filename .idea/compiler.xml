@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="grdlCourier.main" target="1.8" />
+      <module name="grdlCourier.test" target="1.8" />
       <module name="grdlCourier.webapp.main" target="1.8" />
       <module name="grdlCourier.webapp.test" target="1.8" />
     </bytecodeTargetLevel>
