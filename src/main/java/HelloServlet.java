@@ -11,15 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 public class HelloServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//           AreaDAO areaDAO = new AreaDAO();
-//           ArrayList<Area> areaArr = areaDAO.getAreaFromDB(-1, "");
-//           AbonentDAO abonentDAO = new AbonentDAO();
-//           ArrayList<Abonent> abonentArr = abonentDAO.getAbonentFromDB(-1, "", "","",-1, -1, "","",-1);
-//           BillingDao billingDao = new BillingDao();
-//           ArrayList<Billing> billingArr = billingDao.getBillingFromDB(1,0,6,"2002-06-18 00:00:00",1);
-//           TariffDAO tariffDAO = new TariffDAO();
-//           ArrayList<Tariff> tariffArr = tariffDAO.getTariffFromDB(-1, "", -1, -1);
-//           request.setAttribute("size", abonentArr.size());
         AbonentDAO abonentDAO = new AbonentDAO();
         Abonent abonent = abonentDAO.authentication(request.getParameter("login"), request.getParameter("pass"));
         if (abonent.getLogin() != null) {
