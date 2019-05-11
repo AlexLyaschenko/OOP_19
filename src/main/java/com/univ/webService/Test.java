@@ -7,8 +7,9 @@ import java.text.SimpleDateFormat;
 
 public class Test {
     public static void main(String[] args) {
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(formatter.format(date));
+        String str = "123+=EFWFfeowi";
+        if (str.matches("^[A-Za-z0-9]{1,35}")) {
+            System.out.println("cool");
         }
+    }
 }

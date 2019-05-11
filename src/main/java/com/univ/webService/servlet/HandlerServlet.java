@@ -25,9 +25,11 @@ public class HandlerServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+
         if (session.getAttribute("sessionId") == null) session.setAttribute("sessionId", "2");
         if (request.getParameter("sessionId") != null)
             session.setAttribute("sessionId", request.getParameter("sessionId"));
+
         switch (session.getAttribute("sessionId").toString()) {
             case Constants.LOGIN_ACCOUNT:
                 loginAccount(session, request);
@@ -50,8 +52,8 @@ public class HandlerServlet extends HttpServlet {
         String pass;
         String login;
         try {
-            pass = request.getParameter("pass").equals("") ? "," : request.getParameter("pass");
-            login = request.getParameter("login");
+            pass = checkValidation(checkXSS(request.getParameter("pass").equals("") ? "," : request.getParameter("pass")));
+            login = checkValidation(checkXSS(request.getParameter("login")));
         } catch (Exception e) {
             pass = session.getAttribute("pass").toString();
             login = session.getAttribute("login").toString();
@@ -86,7 +88,7 @@ public class HandlerServlet extends HttpServlet {
         int idAbonent;
         AbonentDAO abonentDAO = new AbonentDAO();
         try {
-            idAbonent = Integer.parseInt(request.getParameter("idAbonent"));
+            idAbonent = Integer.parseInt(checkDigitValidation(checkXSS(request.getParameter("idAbonent"))));
         } catch (Exception e) {
             idAbonent = Integer.parseInt(session.getAttribute("idAbonent").toString());
         }
@@ -132,6 +134,7 @@ public class HandlerServlet extends HttpServlet {
         session.setAttribute("tariffPrice", tariff.getPrice());
         ArrayList<Tariff> tariffs = tariffDAO.getTariffFromDB(-1, "", -1, Integer.parseInt(session.getAttribute("areaCode").toString()));
         session.setAttribute("tariffs", tariffs);
+        request.setAttribute("tariffs", tariffs);
     }
 
     private void changeTariff(HttpSession session, HttpServletRequest request) {
@@ -142,18 +145,35 @@ public class HandlerServlet extends HttpServlet {
         int bonus = Integer.parseInt(session.getAttribute("chargeAmount").toString());
         if (bonus >= tariff.getPrice()) {
             bonus -= tariff.getPrice();
-        }
-        else {
+        } else {
             balance -= (tariff.getPrice() - bonus);
             bonus = 0;
             billingDAO.updateBalanceBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), balance);
         }
         billingDAO.updateBonusBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), bonus);
         billingDAO.updateTariffIdBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), tariff.getIdTariff());
-//        Date date = new Date(System.currentTimeMillis());
-//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         billingDAO.updateConnectionDatedBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
         session.setAttribute("sessionId", Constants.ID_USER);
         loginAccount(session, request);
+    }
+
+    private String checkXSS(String s) {
+        return s.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").
+                replaceAll("'", "&apos;").replaceAll("&", "&amp;");
+    }
+
+    private String checkValidation(String s) {
+        if (s.matches("^[A-Za-z0-9]{1,35}")) {
+            return s;
+        }
+        return ",";
+    }
+
+    private String checkDigitValidation(String s) {
+        if (s.matches("^[1-9][0-9]{0,4}")) {
+            return s;
+        }
+        return "0";
+
     }
 }
