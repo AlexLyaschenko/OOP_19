@@ -9,4 +9,6 @@ public class Constants {
     public static final String ERROR = "0";
     public static final String SHOW_USER_BY_ID = "8";
     public static final String CHANGE_TARIFF = "3";
+    public static final String ADMIN = "Admin";
+    public static final String ABONENT = "Abonent";
 }

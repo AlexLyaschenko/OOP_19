@@ -8,7 +8,8 @@
 <c:set var="type" value="${sessionScope['type'].toString()}"/>
 
 <html>
-<head>Title <%=session.getAttribute("sessionId")%></head>
+<head><%=session.getAttribute("sessionId")%>
+</head>
 <body>
 
 <c:if test="${sessionId eq Constants.ERROR}">
@@ -21,40 +22,40 @@
     <%session.invalidate();%>
 </c:if>
 
-<c:if test="${(sessionId eq Constants.SHOW_USER_BY_ID) && (type eq 'Admin')}">
+<c:if test="${(sessionId eq Constants.SHOW_USER_BY_ID) && (type eq Constants.ADMIN)}">
     <c:set var="sessionId" value="${Constants.LOGIN_ACCOUNT}" scope="session"/>
     <p>Name - <c:out value="${sessionScope['name']}"/></p>
     <p>Surname - <c:out value="${sessionScope['surname']}"/></p>
     <p>Number - <c:out value="${sessionScope['number']}"/></p>
     <p>Balance - <c:out value="${sessionScope['balance']}"/></p>
     <p>Service activation date - <c:out value="${sessionScope['connectionDate']}"/></p>
-    <p>Area - <c:out value="${sessionScope['value']}"/></p>
+    <p>Area - <c:out value="${sessionScope['area']}"/></p>
     <p>Bonus - <c:out value="${sessionScope['chargeAmount']}"/></p>
     <p>Tariff name - <c:out value="${sessionScope['nameTariff']}"/></p>
     <p>Tariff price - <c:out value="${sessionScope['priceTariff']}"/></p>
     <p>Status - <c:out value="${sessionScope['status']}"/></p>
     <form method="post" action="hello">
-        <input type="hidden" name="sessionId" id="sessionId" value="12">
+        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.CHANGE_USER_STATUS}"/>>
         <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="change status">
     </form>
     <form method="post" action="hello">
-        <input type="hidden" name="sessionId" id="sessionId" value="2">
+        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
         <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">
     </form>
     <br>
     <a href="/mycontext">Log out</a>
 </c:if>
 
-<c:if test="${(sessionId eq Constants.ID_USER) && (type eq 'Abonent')}">
+<c:if test="${(sessionId eq Constants.ID_USER) && (type eq Constants.ABONENT)}">
     <table border="1">
         <tr>
-            <td><p>Name - <c:out value="${sessionScope['name']}"/></p></td>
+            <td><p>Name - <c:out value="${requestScope['name']}"/></p></td>
         </tr>
         <tr>
-            <td><p>Surname - <c:out value="${sessionScope['surname']}"/></p></td>
+            <td><p>Surname - <c:out value="${requestScope['surname']}"/></p></td>
         </tr>
         <tr>
-            <td><p>Number - <c:out value="${sessionScope['number']}}"/></p></td>
+            <td><p>Number - <c:out value="${requestScope['number']}"/></p></td>
         </tr>
         <tr>
             <td><p>Login - <c:out value="${sessionScope['login']}"/></p></td>
@@ -117,7 +118,8 @@
     <a href="/mycontext">Log out</a>
 </c:if>
 
-<c:if test="${sessionId eq Constants.ID_ADMIN && type eq 'Admin'}">
+<c:if test="${sessionId eq Constants.ID_ADMIN && type eq Constants.ADMIN}">
+    <c:set var="sessionId" value="${Constants.LOGIN_ACCOUNT}" scope="session"/>
     <p>Name - <c:out value="${requestScope['name']}"/></p>
     <p>Surname - <c:out value="${requestScope['surname']}"/></p>
     <p>Your role - admin</p>
@@ -128,7 +130,7 @@
     <p>Show more info about user:</p>
     <form method="post" action="hello">
         <input type="text" name="idAbonent" id="idAbonent-input" required="required" pattern="[1-9][0-9]{0,2}">
-        <input type="hidden" name="sessionId" id="sessionId" value="109Admin">
+        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_USERS}"/>>
         <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">
     </form>
     <table border="1">

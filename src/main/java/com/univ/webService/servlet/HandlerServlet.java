@@ -93,7 +93,14 @@ public class HandlerServlet extends HttpServlet {
             idAbonent = Integer.parseInt(session.getAttribute("idAbonent").toString());
         }
         session.setAttribute("idAbonent", idAbonent);
-        Abonent abonent = abonentDAO.getAbonentFromDB(idAbonent, "", "", "", -1, -1, "", "", 0).get(0);
+        Abonent abonent;
+        try {
+            abonent = abonentDAO.getAbonentFromDB(idAbonent, "", "", "", -1, -1, "", "", 0).get(0);
+        } catch (Exception e) {
+            session.setAttribute("sessoinId", Constants.LOGIN_ACCOUNT);
+            loginAccount(session, request);
+            return;
+        }
         AreaDAO areaDAO = new AreaDAO();
         Area area = areaDAO.getAreaFromDB(abonent.getIdAreaCode(), "").get(0);
         BillingDAO billingDao = new BillingDAO();
