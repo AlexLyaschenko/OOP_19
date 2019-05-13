@@ -1,15 +1,24 @@
-<html>
 <head>
-  <title>Login page</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/loginStyle.css">
 </head>
 <body>
+<form method="post" action="main_page">
+    <div>
+        <p>
+            <label for="login-input">Login:</label>
+            <input type="text" name="login" id="login-input" value="Login" pattern="[a-zA-Z0-9]{1,30}">
+        </p>
 
-<form method="post"  action="hello">
-  <h2>Sign In:</h2>
-  <input type="text" id="login-input" name="login" required="required" pattern="[a-zA-Z0-9]{1,30}"/><br>
-  <input type="password" id="pass-input" name="pass" required="required" pattern="[a-zA-Z0-9]{1,30}"/><br>
-  <input type="submit" id="say-hello-button" value="Sign In" />
+        <p>
+            <label for="pass-input">Password:</label>
+            <input type="password" name="pass" id="pass-input" value="4815162342" pattern="[a-zA-Z0-9]{1,30}">
+        </p>
 
+        <p class="login-submit">
+            <button type="submit" class="login-button" id="say-hello-button">Sign In</button>
+        </p>
+    </div>
 </form>
 </body>
 </html>

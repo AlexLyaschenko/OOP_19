@@ -8,6 +8,7 @@
 <c:set var="type" value="${sessionScope['type'].toString()}"/>
 
 <html>
+<link rel="stylesheet" href="css/userStyle.css">
 <head><%=session.getAttribute("sessionId")%>
 </head>
 <body>
@@ -34,13 +35,15 @@
     <p>Tariff name - <c:out value="${sessionScope['nameTariff']}"/></p>
     <p>Tariff price - <c:out value="${sessionScope['priceTariff']}"/></p>
     <p>Status - <c:out value="${sessionScope['status']}"/></p>
-    <form method="post" action="hello">
+    <form method="post" action="main_page">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.CHANGE_USER_STATUS}"/>>
-        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="change status">
+<%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="change status">--%>
+        <button type="submit">change status</button>
     </form>
-    <form method="post" action="hello">
+    <form method="post" action="main_page">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
-        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">
+<%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">--%>
+        <button type="submit">go to the previous page</button>
     </form>
     <br>
     <a href="/mycontext">Log out</a>
@@ -91,23 +94,25 @@
                 <td><p><c:out value="${tariff.getNameTariff()}"/></p></td>
                 <td><p><c:out value="${tariff.getPrice()}"/></p></td>
 
-                <c:if test="${tariff.getPrice() > sessionScope['balance'] + sessionScope['bonus']}">
+                <c:if test="${tariff.getPrice() > (sessionScope['balance'] + sessionScope['chargeAmount'])}">
                     <td>
-                        <form method="post" action="hello">
+                        <form method="post" action="main_page">
                             <input type="hidden" name="sessionId" id="sessionId" value=<c:out
                                     value="${Constants.CHANGE_TARIFF}"/>>
                             <input type="hidden" name="tarifId" id="tarifId" value="${tariff.getIdTariff()}">
-                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit" disabled>
+<%--                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit" disabled>--%>
+                            <button type="submit" disabled>submit</button>
                         </form>
                     </td>
                 </c:if>
-                <c:if test="${tariff.getPrice() <= sessionScope['balance'] + sessionScope['bonus']}">
+                <c:if test="${tariff.getPrice() <= (sessionScope['balance'] + sessionScope['chargeAmount'])}">
                     <td>
-                        <form method="post" action="hello">
+                        <form method="post" action="main_page">
                             <input type="hidden" name="sessionId" id="sessionId" value=<c:out
                                     value="${Constants.CHANGE_TARIFF}"/>>
                             <input type="hidden" name="tarifId" id="tarifId" value="${tariff.getIdTariff()}">
-                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">
+<%--                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">--%>
+                            <button type="submit">submit</button>
                         </form>
                     </td>
                 </c:if>
@@ -120,18 +125,19 @@
 
 <c:if test="${sessionId eq Constants.ID_ADMIN && type eq Constants.ADMIN}">
     <c:set var="sessionId" value="${Constants.LOGIN_ACCOUNT}" scope="session"/>
-    <p>Name - <c:out value="${requestScope['name']}"/></p>
-    <p>Surname - <c:out value="${requestScope['surname']}"/></p>
-    <p>Your role - admin</p>
+    <h2>Name - <c:out value="${requestScope['name']}"/></h2>
+    <h2>Surname - <c:out value="${requestScope['surname']}"/></h2>
+    <h2>Your role - admin</h2>
     <br>
     <a href="/mycontext">Log out</a>
     <br>
-    <h3>Users</h3>
+    <h1>Users</h1>
     <p>Show more info about user:</p>
-    <form method="post" action="hello">
+    <form method="post" action="main_page">
         <input type="text" name="idAbonent" id="idAbonent-input" required="required" pattern="[1-9][0-9]{0,2}">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_USERS}"/>>
-        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">
+<%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">--%>
+        <button type="submit">submit</button>
     </form>
     <table border="1">
         <tr>

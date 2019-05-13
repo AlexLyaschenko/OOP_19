@@ -3,10 +3,11 @@ package com.univ.webService.DAO;
 import com.univ.webService.dataConnection.DataConnection;
 import com.univ.webService.dataModel.Abonent;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class AbonentDAO {
@@ -14,7 +15,9 @@ public class AbonentDAO {
                                                int idBilling, String Login, String Password, int isAdmin) {
 
         ArrayList<Abonent> getAbonentArr = new ArrayList<>();
+
         Connection conn = DataConnection.getDBConnection();
+
         String sqlQueryAbonent = "SELECT * FROM Abonent WHERE";
         if (idAbonent == -1) {
             sqlQueryAbonent += " idAbonent LIKE '%' ";
@@ -71,8 +74,8 @@ public class AbonentDAO {
         }
 
         try {
-            Statement stat = conn.createStatement();
-            ResultSet rs = stat.executeQuery(sqlQueryAbonent);
+            PreparedStatement pstmt = conn.prepareStatement(sqlQueryAbonent);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Abonent abonent = new Abonent(rs.getInt("idAbonent"), rs.getString("Name"), rs.getString("Surname"),
                         rs.getString("phoneNumber"), rs.getInt("idAreaCode"), rs.getInt("idBilling"),
@@ -80,7 +83,12 @@ public class AbonentDAO {
                 getAbonentArr.add(abonent);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.getMessage();
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return getAbonentArr;
     }

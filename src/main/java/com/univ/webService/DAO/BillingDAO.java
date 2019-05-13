@@ -3,6 +3,10 @@ package com.univ.webService.DAO;
 import com.univ.webService.dataConnection.DataConnection;
 import com.univ.webService.dataModel.Billing;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -58,12 +62,16 @@ public class BillingDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return getBillingArr;
     }
 
     public void updateBillingStatusDB(int idBilling, String status) {
-        DataConnection dConn = new DataConnection();
-        Connection conn = dConn.getDBConnection();
+        Connection conn = DataConnection.getDBConnection();
         status = status.equals("disabled") ? "enabled" : "disabled";
         String sqlQueryBilling = "UPDATE Billing SET Status = '" + status + "' WHERE idBilling = " + idBilling;
         try {
@@ -71,6 +79,11 @@ public class BillingDAO {
             stat.executeUpdate(sqlQueryBilling);
         } catch (SQLException e) {
             e.getMessage();
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -84,11 +97,15 @@ public class BillingDAO {
         } catch (SQLException e) {
             e.getMessage();
         }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateBalanceBillingDB(int idBilling, int balance) {
-        DataConnection dConn = new DataConnection();
-        Connection conn = dConn.getDBConnection();
+        Connection conn = DataConnection.getDBConnection();
         String sqlQueryBilling = "UPDATE Billing SET Balance = '" + balance + "' WHERE idBilling = " + idBilling;
         try {
             Statement stat = conn.createStatement();
@@ -96,11 +113,15 @@ public class BillingDAO {
         } catch (SQLException e) {
             e.getMessage();
         }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateTariffIdBillingDB(int idBilling, int idTariff) {
-        DataConnection dConn = new DataConnection();
-        Connection conn = dConn.getDBConnection();
+        Connection conn = DataConnection.getDBConnection();
         String sqlQueryBilling = "UPDATE Billing SET idTariff = '" + idTariff + "' WHERE idBilling = " + idBilling;
         try {
             Statement stat = conn.createStatement();
@@ -108,17 +129,26 @@ public class BillingDAO {
         } catch (SQLException e) {
             e.getMessage();
         }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateConnectionDatedBillingDB(int idBilling, String time) {
-        DataConnection dConn = new DataConnection();
-        Connection conn = dConn.getDBConnection();
+        Connection conn = DataConnection.getDBConnection();
         String sqlQueryBilling = "UPDATE Billing SET connectionDate = '" + time + "' WHERE idBilling = " + idBilling;
         try {
             Statement stat = conn.createStatement();
             stat.executeUpdate(sqlQueryBilling);
         } catch (SQLException e) {
             e.getMessage();
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
