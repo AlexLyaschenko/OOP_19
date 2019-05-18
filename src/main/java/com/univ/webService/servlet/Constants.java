@@ -11,4 +11,6 @@ public class Constants {
     public static final String CHANGE_TARIFF = "3";
     public static final String ADMIN = "Admin";
     public static final String ABONENT = "Abonent";
+    public static final String SHOW_PEOPLE_IN_REGION = "101";
+    public static final String SHOW_PEOPLE_IN_TARIFF = "102";
 }

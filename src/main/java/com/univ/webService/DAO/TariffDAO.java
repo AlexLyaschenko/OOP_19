@@ -12,10 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TariffDAO {
-    public ArrayList<Tariff> getTariffFromDB(int idTariff, String nameTariff, int Price, int idArea) {
-        ArrayList<Tariff> getTariffArr = new ArrayList<>();
+    public List<Tariff> getTariffFromDB(int idTariff, String nameTariff, int Price, int idArea) {
+        List<Tariff> getTariffArr = new ArrayList<>();
 
         Connection conn = DataConnection.getDBConnection();
 

@@ -12,10 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AreaDAO {
-    public ArrayList<Area> getAreaFromDB(int idArea, String nameArea) {
-        ArrayList<Area> getAreaArr = new ArrayList<>();
+    public List<Area> getAreaFromDB(int idArea, String nameArea) {
+        List<Area> getAreaArr = new ArrayList<>();
 
         Connection conn = DataConnection.getDBConnection();
 

@@ -9,10 +9,11 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BillingDAO {
-    public ArrayList<Billing> getBillingFromDB(int idBilling, int Balance, int chargeAmount, String connectionDate, int idTariff, String status) {
-        ArrayList<Billing> getBillingArr = new ArrayList<>();
+    public List<Billing> getBillingFromDB(int idBilling, int Balance, int chargeAmount, String connectionDate, int idTariff, String status) {
+        List<Billing> getBillingArr = new ArrayList<>();
         Connection conn = DataConnection.getDBConnection();
         String sqlQueryBilling = "SELECT idBilling, Balance, chargeAmount, connectionDate, idTariff, Status FROM Billing WHERE";
         if (idBilling == -1) {
@@ -71,84 +72,28 @@ public class BillingDAO {
     }
 
     public void updateBillingStatusDB(int idBilling, String status) {
-        Connection conn = DataConnection.getDBConnection();
         status = status.equals("disabled") ? "enabled" : "disabled";
         String sqlQueryBilling = "UPDATE Billing SET Status = '" + status + "' WHERE idBilling = " + idBilling;
-        try {
-            Statement stat = conn.createStatement();
-            stat.executeUpdate(sqlQueryBilling);
-        } catch (SQLException e) {
-            e.getMessage();
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DataConnection.updateDB(sqlQueryBilling);
     }
 
     public void updateBonusBillingDB(int idBilling, int bonus) {
-        DataConnection dConn = new DataConnection();
-        Connection conn = dConn.getDBConnection();
         String sqlQueryBilling = "UPDATE Billing SET chargeAmount = '" + bonus + "' WHERE idBilling = " + idBilling;
-        try {
-            Statement stat = conn.createStatement();
-            stat.executeUpdate(sqlQueryBilling);
-        } catch (SQLException e) {
-            e.getMessage();
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DataConnection.updateDB(sqlQueryBilling);
     }
 
     public void updateBalanceBillingDB(int idBilling, int balance) {
-        Connection conn = DataConnection.getDBConnection();
         String sqlQueryBilling = "UPDATE Billing SET Balance = '" + balance + "' WHERE idBilling = " + idBilling;
-        try {
-            Statement stat = conn.createStatement();
-            stat.executeUpdate(sqlQueryBilling);
-        } catch (SQLException e) {
-            e.getMessage();
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DataConnection.updateDB(sqlQueryBilling);
     }
 
     public void updateTariffIdBillingDB(int idBilling, int idTariff) {
-        Connection conn = DataConnection.getDBConnection();
         String sqlQueryBilling = "UPDATE Billing SET idTariff = '" + idTariff + "' WHERE idBilling = " + idBilling;
-        try {
-            Statement stat = conn.createStatement();
-            stat.executeUpdate(sqlQueryBilling);
-        } catch (SQLException e) {
-            e.getMessage();
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DataConnection.updateDB(sqlQueryBilling);
     }
 
     public void updateConnectionDatedBillingDB(int idBilling, String time) {
-        Connection conn = DataConnection.getDBConnection();
         String sqlQueryBilling = "UPDATE Billing SET connectionDate = '" + time + "' WHERE idBilling = " + idBilling;
-        try {
-            Statement stat = conn.createStatement();
-            stat.executeUpdate(sqlQueryBilling);
-        } catch (SQLException e) {
-            e.getMessage();
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DataConnection.updateDB(sqlQueryBilling);
     }
 }

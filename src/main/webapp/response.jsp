@@ -37,12 +37,12 @@
     <p>Status - <c:out value="${sessionScope['status']}"/></p>
     <form method="post" action="main_page">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.CHANGE_USER_STATUS}"/>>
-<%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="change status">--%>
+            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="change status">--%>
         <button type="submit">change status</button>
     </form>
     <form method="post" action="main_page">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
-<%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">--%>
+            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">--%>
         <button type="submit">go to the previous page</button>
     </form>
     <br>
@@ -100,7 +100,7 @@
                             <input type="hidden" name="sessionId" id="sessionId" value=<c:out
                                     value="${Constants.CHANGE_TARIFF}"/>>
                             <input type="hidden" name="tarifId" id="tarifId" value="${tariff.getIdTariff()}">
-<%--                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit" disabled>--%>
+                                <%--                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit" disabled>--%>
                             <button type="submit" disabled>submit</button>
                         </form>
                     </td>
@@ -111,7 +111,7 @@
                             <input type="hidden" name="sessionId" id="sessionId" value=<c:out
                                     value="${Constants.CHANGE_TARIFF}"/>>
                             <input type="hidden" name="tarifId" id="tarifId" value="${tariff.getIdTariff()}">
-<%--                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">--%>
+                                <%--                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">--%>
                             <button type="submit">submit</button>
                         </form>
                     </td>
@@ -136,7 +136,7 @@
     <form method="post" action="main_page">
         <input type="text" name="idAbonent" id="idAbonent-input" required="required" pattern="[1-9][0-9]{0,2}">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_USERS}"/>>
-<%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">--%>
+            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">--%>
         <button type="submit">submit</button>
     </form>
     <table border="1">
@@ -155,7 +155,78 @@
             </tr>
         </c:forEach>
     </table>
+    <br>
+    <br>
+    <p>Show number of users in region by week</p>
+    <form method="post" action="main_page">
+        <input type="text" name="idWeek" id="idWeek" required="required" pattern="[1-9][0-9]{0,2}">
+        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_PEOPLE_IN_REGION}"/>>
+        <button type="submit">submit</button>
+    </form>
+    <br>
+    <br>
+    <p>Show number of users for each tariff by week</p>
+    <form method="post" action="main_page">
+        <input type="text" name="idWeek" id="idWeek" required="required" pattern="[1-9][0-9]{0,2}">
+        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_PEOPLE_IN_TARIFF}"/>>
+        <button type="submit">submit</button>
+    </form>
 </c:if>
-
+<c:if test="${sessionId eq Constants.SHOW_PEOPLE_IN_REGION}">
+    <c:if test="${requestScope['numberOfPeopleArr'].size() == 0}">
+        <h2>Incorrect week, please try again</h2>
+    </c:if>
+    <c:if test="${requestScope['numberOfPeopleArr'].size() != 0}">
+        <table>
+            <tr>
+                <td>Week number</td>
+                <td>Area id</td>
+                <td>Number of users</td>
+            </tr>
+            <c:forEach items="${requestScope['numberOfPeopleArr']}" var="people">
+                <tr>
+                    <td><c:out value="${people.getIdWeek()}"/></td>
+                    <td><c:out value="${people.getIdArea()}"/></td>
+                    <td><c:out value="${people.getNumberOfPeople()}"/></td>
+                </tr>
+            </c:forEach>
+        </table>
+    </c:if>
+    <form method="post" action="main_page">
+        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
+            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">--%>
+        <button type="submit">go to the previous page</button>
+    </form>
+    <br>
+    <a href="/mycontext">Log out</a>
+</c:if>
+<c:if test="${sessionId eq Constants.SHOW_PEOPLE_IN_TARIFF}">
+    <c:if test="${requestScope['peopleInTariffArr'].size() == 0}">
+        <h2>Incorrect week, please try again</h2>
+    </c:if>
+    <c:if test="${requestScope['peopleInTariffArr'].size() != 0}">
+        <table>
+            <tr>
+                <td>Week number</td>
+                <td>idTariff</td>
+                <td>Number of users</td>
+            </tr>
+            <c:forEach items="${requestScope['peopleInTariffArr']}" var="people">
+                <tr>
+                    <td><c:out value="${people.getIdWeek()}"/></td>
+                    <td><c:out value="${people.getIdTariff()}"/></td>
+                    <td><c:out value="${people.getNumberOfPeople()}"/></td>
+                </tr>
+            </c:forEach>
+        </table>
+    </c:if>
+    <form method="post" action="main_page">
+        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
+            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">--%>
+        <button type="submit">go to the previous page</button>
+    </form>
+    <br>
+    <a href="/mycontext">Log out</a>
+</c:if>
 </body>
 </html>

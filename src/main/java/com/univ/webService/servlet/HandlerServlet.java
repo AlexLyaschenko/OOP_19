@@ -1,13 +1,7 @@
 package com.univ.webService.servlet;
 
-import com.univ.webService.DAO.AbonentDAO;
-import com.univ.webService.DAO.AreaDAO;
-import com.univ.webService.DAO.BillingDAO;
-import com.univ.webService.DAO.TariffDAO;
-import com.univ.webService.dataModel.Abonent;
-import com.univ.webService.dataModel.Area;
-import com.univ.webService.dataModel.Billing;
-import com.univ.webService.dataModel.Tariff;
+import com.univ.webService.DAO.*;
+import com.univ.webService.dataModel.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +13,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 @WebServlet("/main_page")
 public class HandlerServlet extends HttpServlet {
@@ -43,6 +39,12 @@ public class HandlerServlet extends HttpServlet {
             case Constants.CHANGE_TARIFF:
                 changeTariff(session, request);
                 break;
+            case Constants.SHOW_PEOPLE_IN_REGION:
+                showPeopleInRegion(session, request);
+                break;
+            case Constants.SHOW_PEOPLE_IN_TARIFF:
+                showPeopleInTariff(session, request);
+                break;
         }
         request.getRequestDispatcher("response.jsp").forward(request, response);
     }
@@ -60,12 +62,13 @@ public class HandlerServlet extends HttpServlet {
         }
         session.setAttribute("pass", pass);
         session.setAttribute("login", login);
-        ArrayList<Abonent> abonentArr = abonentDAO.getAbonentFromDB(-1, "", "", "", -1, -1, login, pass, -1);
+        List<Abonent> abonentArr = abonentDAO.getAbonentFromDB(-1, "", "", "", -1, -1, login, pass, -1);
         if (abonentArr.size() == 1) {
             Abonent abonent = abonentArr.get(0);
             request.setAttribute("name", abonent.getName());
             request.setAttribute("surname", abonent.getSurname());
             request.setAttribute("number", abonent.getPhoneNumber());
+            session.setAttribute("idAbonent", abonent.getIdAbonent());
             if (abonent.getIsAdmin() == 0) {
                 session.setAttribute("sessionId", Constants.ID_USER);
                 session.setAttribute("type", "Abonent");
@@ -75,7 +78,7 @@ public class HandlerServlet extends HttpServlet {
             } else {
                 session.setAttribute("sessionId", Constants.ID_ADMIN);
                 session.setAttribute("type", "Admin");
-                ArrayList<Abonent> userArr = abonentDAO.getAbonentFromDB(-1, "", "", "", -1, -1, "", "", 0);
+                List<Abonent> userArr = abonentDAO.getAbonentFromDB(-1, "", "", "", -1, -1, "", "", 0);
                 request.setAttribute("abonentArr", userArr);
             }
         } else {
@@ -124,6 +127,9 @@ public class HandlerServlet extends HttpServlet {
     private void changeUserStatus(HttpSession session, HttpServletRequest request) {
         BillingDAO billingDAO = new BillingDAO();
         billingDAO.updateBillingStatusDB(Integer.parseInt(session.getAttribute("billingId").toString()), session.getAttribute("status").toString());
+        addChangesToHistory(Integer.parseInt(session.getAttribute("idAbonent").toString()), session.getAttribute("nameTariff").toString(),
+                "status has been changed (was " + session.getAttribute("status") + ")", new java.util.Date().toString(), getCurrentWeek());
+
         session.setAttribute("sessionId", "109Admin");
         showUserInfo(session, request);
     }
@@ -139,7 +145,7 @@ public class HandlerServlet extends HttpServlet {
         Tariff tariff = tariffDAO.getTariffFromDB(billing.getIdTariff(), "", -1, -1).get(0);
         session.setAttribute("tariff", tariff.getNameTariff());
         session.setAttribute("tariffPrice", tariff.getPrice());
-        ArrayList<Tariff> tariffs = tariffDAO.getTariffFromDB(-1, "", -1, Integer.parseInt(session.getAttribute("areaCode").toString()));
+        List<Tariff> tariffs = tariffDAO.getTariffFromDB(-1, "", -1, Integer.parseInt(session.getAttribute("areaCode").toString()));
         session.setAttribute("tariffs", tariffs);
         request.setAttribute("tariffs", tariffs);
     }
@@ -148,6 +154,12 @@ public class HandlerServlet extends HttpServlet {
         TariffDAO tariffDAO = new TariffDAO();
         BillingDAO billingDAO = new BillingDAO();
         Tariff tariff = tariffDAO.getTariffFromDB(Integer.parseInt(request.getParameter("tarifId")), "", -1, -1).get(0);
+        String nextTariff = tariff.getNameTariff();
+        Billing billing = billingDAO.getBillingFromDB(Integer.parseInt(session.getAttribute("billingId").toString()), -1, -1, "", -1, "").get(0);
+        int currentIdTariff = billing.getIdTariff();
+        Tariff currentTariff = tariffDAO.getTariffFromDB(currentIdTariff, "", -1, -1).get(0);
+        String currentTariffName = currentTariff.getNameTariff();
+        String currentStatus = billing.getStatus();
         int balance = Integer.parseInt(session.getAttribute("balance").toString());
         int bonus = Integer.parseInt(session.getAttribute("chargeAmount").toString());
         if (bonus >= tariff.getPrice()) {
@@ -159,9 +171,38 @@ public class HandlerServlet extends HttpServlet {
         }
         billingDAO.updateBonusBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), bonus);
         billingDAO.updateTariffIdBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), tariff.getIdTariff());
-        billingDAO.updateConnectionDatedBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
+        billingDAO.updateConnectionDatedBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
         session.setAttribute("sessionId", Constants.ID_USER);
+        if (currentTariffName == null) {
+            Exception e = new Exception();
+            e.printStackTrace();
+        }
+        addChangesToHistory(Integer.parseInt(session.getAttribute("idAbonent").toString()), "tariff has been changed (was \"" +
+                currentTariffName + "\", and now \"" + nextTariff + "\")", currentStatus, new java.util.Date().toString(), getCurrentWeek());
         loginAccount(session, request);
+    }
+
+    private void addChangesToHistory(int idAbonent, String tariffName, String status, String date, int idWeek) {
+        HistoryDAO history = new HistoryDAO();
+        history.setHistoryToDB(idAbonent, tariffName, status, date, idWeek);
+    }
+
+    private void showPeopleInRegion(HttpSession session, HttpServletRequest request) {
+        PeopleInRegionDAO peopleDAO = new PeopleInRegionDAO();
+        List<PeopleInRegion> numberOfPeopleArr = new ArrayList<>();
+        numberOfPeopleArr = peopleDAO.getPeopleFromDB(-1,-1,-1,Integer.parseInt(request.getParameter("idWeek")));
+        request.setAttribute("numberOfPeopleArr", numberOfPeopleArr);
+    }
+
+    private void showPeopleInTariff(HttpSession session, HttpServletRequest request) {
+        PeopleInTariffDAO peopelDAO = new PeopleInTariffDAO();
+        List<PeopleInTariff> peopleInTariffArr = peopelDAO.getPeople(-1,-1,-1,Integer.parseInt(request.getParameter("idWeek")));
+        request.setAttribute("peopleInTariffArr", peopleInTariffArr);
+    }
+
+    private int getCurrentWeek() {
+        return Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
     }
 
     private String checkXSS(String s) {
@@ -183,4 +224,5 @@ public class HandlerServlet extends HttpServlet {
         return "0";
 
     }
+
 }

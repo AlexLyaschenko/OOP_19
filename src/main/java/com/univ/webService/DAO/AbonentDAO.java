@@ -9,12 +9,13 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AbonentDAO {
-    public ArrayList<Abonent> getAbonentFromDB(int idAbonent, String Name, String Surname, String phoneNumber, int idAreaCode,
-                                               int idBilling, String Login, String Password, int isAdmin) {
+    public List<Abonent> getAbonentFromDB(int idAbonent, String Name, String Surname, String phoneNumber, int idAreaCode,
+                                          int idBilling, String Login, String Password, int isAdmin) {
 
-        ArrayList<Abonent> getAbonentArr = new ArrayList<>();
+        List<Abonent> getAbonentArr = new ArrayList<>();
 
         Connection conn = DataConnection.getDBConnection();
 
