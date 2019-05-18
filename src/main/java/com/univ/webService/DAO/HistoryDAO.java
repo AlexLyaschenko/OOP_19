@@ -11,11 +11,10 @@ import java.util.List;
 public class HistoryDAO {
     public List<History> getHistoryFromDB(int idHistory, int idAbonent, int idWeek) {
 
-        final String sqlQuery = "SELECT * FROM History " +
-                "WHERE idHistory " + (idHistory == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idHistory) +
-                " AND idAbonent " + (idAbonent == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idAbonent) +
-                " AND idWeek " + (idWeek == Constants.SELECT_ALL_INT ? "LIKE '%' " : "= " + idWeek);
-
+        final String sqlQuery = String.format("SELECT * FROM History WHERE idHistory %s AND idAbonent %s AND idWeek %s",
+                (idHistory == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idHistory),
+                (idAbonent == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idAbonent),
+                (idWeek == Constants.SELECT_ALL_INT ? "LIKE '%' " : "= " + idWeek));
 
         List<History> getHistoryArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
@@ -36,8 +35,8 @@ public class HistoryDAO {
     }
 
     public void setHistoryToDB(int idAbonent, String tariffName, String status, String date, int idWeek) {
-        final String sqlQueryHistory = "INSERT INTO History (idAbonent, TariffName, Status, Date, idWeek) VALUES ('" +
-                idAbonent + "', '" + tariffName + "', '" + status + "', '" + date + "', '" + idWeek + "')";
+        final String sqlQueryHistory = String.format("INSERT INTO History (idAbonent, TariffName, Status, Date, idWeek) " +
+                "VALUES ('%d', '%s', '%s', '%s', '%d')", idAbonent, tariffName, status, date, idWeek);
         DataConnection.insertToDB(sqlQueryHistory);
     }
 }

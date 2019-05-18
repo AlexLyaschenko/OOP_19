@@ -12,24 +12,26 @@ import java.util.logging.Logger;
 public class AbonentDAO {
     public List<Abonent> getAbonentFromDB(int idAbonent, String name, String surname, String phoneNumber, int idAreaCode,
                                           int idBilling, String login, String password, int isAdmin) {
-
-        final String sqlQuery = "SELECT * FROM Abonent WHERE idAbonent " + (idAbonent == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idAbonent) +
-                " AND Name " + (name.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + name + "'") +
-                " AND Surname " + (surname.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + surname + "'") +
-                " AND phoneNumber " + (phoneNumber.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + phoneNumber + "'") +
-                " AND idAreaCode " + (idAreaCode == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idAreaCode) +
-                " AND idBilling " + (idBilling == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idBilling) +
-                " AND Login " + (login.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + login + "'") +
-                " AND Password " + (password.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + password + "'") +
-                " AND isAdmin " + (isAdmin == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + isAdmin);
-
-
         List<Abonent> getAbonentArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
-
+        final String sqlQuery =
+                String.format(
+                        "SELECT * FROM Abonent WHERE idAbonent %s AND Name %s AND Surname %s AND phoneNumber %s AND " +
+                                "idAreaCode %s AND idBilling %s AND Login %s AND Password %s AND isAdmin %s",
+                        idAbonent == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idAbonent,
+                        name.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + name + "'",
+                        surname.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + surname + "'",
+                        phoneNumber.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + phoneNumber + "'",
+                        idAreaCode == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idAreaCode,
+                        idBilling == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idBilling,
+                        login.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + login + "'",
+                        password.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + password + "'",
+                        isAdmin == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + isAdmin
+                );
         try {
             PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-            ResultSet rs = pstmt.executeQuery();
+            ResultSet rs = pstmt.
+                    executeQuery();
             while (rs.next()) {
                 Abonent abonent = new Abonent(rs.getInt("idAbonent"), rs.getString("Name"), rs.getString("Surname"),
                         rs.getString("phoneNumber"), rs.getInt("idAreaCode"), rs.getInt("idBilling"),

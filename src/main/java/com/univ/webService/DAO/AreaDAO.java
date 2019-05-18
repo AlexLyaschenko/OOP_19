@@ -11,9 +11,13 @@ import java.util.List;
 public class AreaDAO {
     public List<Area> getAreaFromDB(int idArea, String nameArea) {
 
-        final String sqlQuery = "SELECT idArea, nameArea FROM Area WHERE idArea " + (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea) +
-                " AND nameArea " + (nameArea.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + nameArea + "'");
+        final String sqlQuery =
+                String.format(
+                        "SELECT idArea, nameArea FROM Area WHERE idArea %s AND nameArea %s",
+                        (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea),
+                        (nameArea.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + nameArea + "'")
 
+                );
         List<Area> getAreaArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
         try {

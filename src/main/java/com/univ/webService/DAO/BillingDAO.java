@@ -11,14 +11,17 @@ import java.util.List;
 public class BillingDAO {
     public List<Billing> getBillingFromDB(int idBilling, int balance, int chargeAmount, String connectionDate, int idTariff, String status) {
 
-        final String sqlQuery = "SELECT * FROM Billing WHERE idBilling " + (idBilling == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idBilling) +
-                " AND Balance " + (balance == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + balance) +
-                " AND chargeAmount " + (chargeAmount == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + chargeAmount) +
-                " AND connectionDate " + (connectionDate.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + connectionDate + "'") +
-                " AND idTariff " + (idTariff == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idTariff) +
-                " AND Status " + (status.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + status + "'");
-
-
+        final String sqlQuery =
+                String.format(
+                        "SELECT * FROM Billing WHERE idBilling %s AND Balance %s AND chargeAmount %s AND connectionDate %s " +
+                                "AND idTariff %s AND Status %s",
+                        (idBilling == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idBilling),
+                        (balance == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + balance),
+                        (chargeAmount == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + chargeAmount),
+                        (connectionDate.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + connectionDate + "'"),
+                        (idTariff == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idTariff),
+                        (status.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + status + "'")
+                );
         List<Billing> getBillingArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
         try {
@@ -38,27 +41,52 @@ public class BillingDAO {
 
     public void updateBillingStatusDB(int idBilling, String status) {
         status = status.equals("disabled") ? "enabled" : "disabled";
-        String sqlQueryBilling = "UPDATE Billing SET Status = '" + status + "' WHERE idBilling = " + idBilling;
-        DataConnection.updateDB(sqlQueryBilling);
+        String sqlQuery =
+                String.format(
+                        "UPDATE Billing SET Status = '%s' WHERE idBilling = '%s'",
+                        status,
+                        idBilling
+                );
+        DataConnection.updateDB(sqlQuery);
     }
 
     public void updateBonusBillingDB(int idBilling, int bonus) {
-        String sqlQueryBilling = "UPDATE Billing SET chargeAmount = '" + bonus + "' WHERE idBilling = " + idBilling;
-        DataConnection.updateDB(sqlQueryBilling);
+        String sqlQuery =
+                String.format(
+                        "UPDATE Billing SET chargeAmount = '%s' WHERE idBilling = '%s'",
+                        bonus,
+                        idBilling
+                );
+        DataConnection.updateDB(sqlQuery);
     }
 
     public void updateBalanceBillingDB(int idBilling, int balance) {
-        String sqlQueryBilling = "UPDATE Billing SET Balance = '" + balance + "' WHERE idBilling = " + idBilling;
-        DataConnection.updateDB(sqlQueryBilling);
+        String sqlQuery =
+                String.format(
+                        "UPDATE Billing SET Balance = '%s' WHERE idBilling = '%s'",
+                        balance,
+                        idBilling
+                );
+        DataConnection.updateDB(sqlQuery);
     }
 
     public void updateTariffIdBillingDB(int idBilling, int idTariff) {
-        String sqlQueryBilling = "UPDATE Billing SET idTariff = '" + idTariff + "' WHERE idBilling = " + idBilling;
-        DataConnection.updateDB(sqlQueryBilling);
+        String sqlQuery =
+                String.format(
+                        "UPDATE Billing SET idTariff = '%s' WHERE idBilling = '%s'",
+                        idTariff,
+                        idBilling
+                );
+        DataConnection.updateDB(sqlQuery);
     }
 
     public void updateConnectionDatedBillingDB(int idBilling, String time) {
-        String sqlQueryBilling = "UPDATE Billing SET connectionDate = '" + time + "' WHERE idBilling = " + idBilling;
-        DataConnection.updateDB(sqlQueryBilling);
+        String sqlQuery =
+                String.format(
+                        "UPDATE Billing SET connectionDate = '%s' WHERE idBilling = '%s'",
+                        time,
+                        idBilling
+                );
+        DataConnection.updateDB(sqlQuery);
     }
 }

@@ -37,12 +37,10 @@
     <p>Status - <c:out value="${sessionScope['status']}"/></p>
     <form method="post" action="main_page">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.CHANGE_USER_STATUS}"/>>
-            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="change status">--%>
         <button type="submit">change status</button>
     </form>
     <form method="post" action="main_page">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
-            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">--%>
         <button type="submit">go to the previous page</button>
     </form>
     <br>
@@ -100,7 +98,6 @@
                             <input type="hidden" name="sessionId" id="sessionId" value=<c:out
                                     value="${Constants.CHANGE_TARIFF}"/>>
                             <input type="hidden" name="tarifId" id="tarifId" value="${tariff.getIdTariff()}">
-                                <%--                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit" disabled>--%>
                             <button type="submit" disabled>submit</button>
                         </form>
                     </td>
@@ -111,7 +108,6 @@
                             <input type="hidden" name="sessionId" id="sessionId" value=<c:out
                                     value="${Constants.CHANGE_TARIFF}"/>>
                             <input type="hidden" name="tarifId" id="tarifId" value="${tariff.getIdTariff()}">
-                                <%--                            <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">--%>
                             <button type="submit">submit</button>
                         </form>
                     </td>
@@ -136,7 +132,6 @@
     <form method="get" action="main_page">
         <input type="text" name="idAbonent" id="idAbonent-input" required="required" pattern="[1-9][0-9]{0,2}">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_USERS}"/>>
-            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="submit">--%>
         <button type="submit">submit</button>
     </form>
     <table border="1">
@@ -241,7 +236,6 @@
     </c:if>
     <form method="post" action="main_page">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
-            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">--%>
         <button type="submit">go to the previous page</button>
     </form>
 </c:if>
@@ -271,7 +265,6 @@
     </c:if>
     <form method="post" action="main_page">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
-            <%--        <input style="margin-top: 10px; margin-left: 10px;" type="submit" value="go to the previous page">--%>
         <button type="submit">go to the previous page</button>
     </form>
 </c:if>

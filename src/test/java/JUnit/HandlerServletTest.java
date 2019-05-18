@@ -28,5 +28,6 @@ public class HandlerServletTest extends Mockito {
         new HandlerServlet().doPost(request, response);
         verify(request, atLeast(1)).getParameter("login");
         verify(request, atLeast(1)).getSession();
+
     }
 }

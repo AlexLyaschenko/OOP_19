@@ -10,12 +10,11 @@ import java.util.List;
 
 public class TariffDAO {
     public List<Tariff> getTariffFromDB(int idTariff, String nameTariff, int price, int idArea) {
-
-        final String sqlQuery = "SELECT * FROM Tariff WHERE idTariff " + (idTariff == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idTariff) +
-                " AND nameTariff " + (nameTariff.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + nameTariff + "'") +
-                " AND Price " + (price == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + price) +
-                " AND idArea " + (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea);
-
+        final String sqlQuery = String.format("SELECT * FROM Tariff WHERE idTariff %s AND nameTariff %s AND Price %s AND idArea %s",
+                (idTariff == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idTariff),
+                (nameTariff.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + nameTariff + "'"),
+                (price == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + price),
+                (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea));
         List<Tariff> getTariffArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
         try {

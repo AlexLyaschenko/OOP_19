@@ -1,10 +1,7 @@
 package com.univ.webService;
 
 
-import com.univ.webService.DAO.AbonentDAO;
-import com.univ.webService.DAO.HistoryDAO;
-import com.univ.webService.DAO.PeopleInRegionDAO;
-import com.univ.webService.DAO.PeopleInTariffDAO;
+import com.univ.webService.DAO.*;
 import com.univ.webService.dataModel.PeopleInTariff;
 
 import java.text.ParseException;
@@ -22,7 +19,7 @@ public class Test {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date1);
         int week = cal.get(Calendar.WEEK_OF_YEAR);
-        PeopleInRegionDAO peopleInRegionDAO = new PeopleInRegionDAO();
-        peopleInRegionDAO.setUserToDB(123,123,123);
+        BillingDAO billingDAO = new BillingDAO();
+        System.out.println(billingDAO.getBillingFromDB(-1,-1,-1,"",-1,"").size());
     }
 }

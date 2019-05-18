@@ -14,12 +14,11 @@ import java.util.List;
 public class PeopleInTariffDAO {
     public List<PeopleInTariff> getPeople(int idPeople, int idTariff, int numberOfPeople, int idWeek) {
 
-        final String sqlQuery = "SELECT * FROM PeopleInTariff WHERE idPeopleInTariff " +
-                (idPeople == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idPeople) +
-                " AND idTariff " + (idTariff == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idTariff) +
-                " AND numberOfPeople " + (numberOfPeople == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + numberOfPeople) +
-                " AND idWeek " + (idWeek == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idWeek);
-
+        final String sqlQuery = String.format("SELECT * FROM PeopleInTariff WHERE idPeopleInTariff %s AND idTariff %s AND numberOfPeople %s AND idWeek %s",
+                (idPeople == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idPeople),
+                (idTariff == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idTariff),
+                (numberOfPeople == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + numberOfPeople),
+                (idWeek == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idWeek));
         List<PeopleInTariff> getPeopleArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
         try {
@@ -38,8 +37,8 @@ public class PeopleInTariffDAO {
     }
 
     public void setUserToDB(int idPeopleInTariff, int idTariff, int numberOfPeople, int idWeek) {
-        String sqlQueryHistory = "INSERT INTO PeopleInTariff VALUES ('" + idPeopleInTariff + "', '" + idTariff + "', '" + numberOfPeople + "', '" +
-                idWeek + "')";
+        String sqlQueryHistory = String.format("INSERT INTO PeopleInTariff VALUES ('%d', '%d', '%d', '%d')",
+                idPeopleInTariff, idTariff, numberOfPeople, idWeek);
         DataConnection.insertToDB(sqlQueryHistory);
     }
 }
