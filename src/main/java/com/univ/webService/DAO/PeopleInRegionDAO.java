@@ -3,6 +3,7 @@ package com.univ.webService.DAO;
 import com.univ.webService.dataConnection.DataConnection;
 import com.univ.webService.dataModel.PeopleInRegion;
 import com.univ.webService.dataModel.PeopleInTariff;
+import com.univ.webService.servlet.Constants;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,56 +14,35 @@ import java.util.List;
 
 public class PeopleInRegionDAO {
     public List<PeopleInRegion> getPeopleFromDB(int idPeople, int idArea, int numberOfPeople, int idWeek) {
+
+        final String sqlQuery = "SELECT * FROM PeopleInRegion WHERE idPeopleInRegion " +
+                (idPeople == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idPeople) +
+                " AND idArea " + (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea) +
+                " AND numberOfPeople " + (numberOfPeople == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + numberOfPeople) +
+                " AND idWeek " + (idWeek == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idWeek);
+
+
         List<PeopleInRegion> getPeopleArr = new ArrayList<>();
-
         Connection connection = DataConnection.getDBConnection();
-
-        String sqlQueryPeopleInRegion = "SELECT * FROM PeopleInRegion Where";
-        if (idPeople == -1) {
-            sqlQueryPeopleInRegion += " idPeopleInRegion LIKE '%' ";
-        } else {
-            sqlQueryPeopleInRegion += " idPeopleInRegion = " + idPeople + " ";
-        }
-        sqlQueryPeopleInRegion += "AND";
-        if (idArea == -1) {
-            sqlQueryPeopleInRegion += " idArea LIKE '%' ";
-        } else {
-            sqlQueryPeopleInRegion += " idArea = " + idArea + " ";
-        }
-        sqlQueryPeopleInRegion += "AND";
-        if (numberOfPeople == -1) {
-            sqlQueryPeopleInRegion += " numberOfPeople LIKE '%' ";
-        } else {
-            sqlQueryPeopleInRegion += " numberOfPeople = " + numberOfPeople + " ";
-        }
-        sqlQueryPeopleInRegion += "AND";
-        if (idWeek == -1) {
-            sqlQueryPeopleInRegion += " idWeek Like '%'";
-        } else {
-            sqlQueryPeopleInRegion += " idWeek = " + idWeek;
-        }
-
         try {
-            PreparedStatement pstmt = connection.prepareStatement(sqlQueryPeopleInRegion);
+            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 PeopleInRegion people = new PeopleInRegion(rs.getInt("idPeopleInRegion"), rs.getInt("idArea"),
                         rs.getInt("numberOfPeople"), rs.getInt("idWeek"));
                 getPeopleArr.add(people);
             }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
             connection.close();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return getPeopleArr;
+    }
+
+    public void setUserToDB(int idArea, int numberOfPeople, int idWeek) {
+        String sqlQueryHistory = "INSERT INTO PeopleInRegion (idArea, numberOfPeople, idWeek) VALUES ('" + idArea + "', '" +
+                numberOfPeople + "', '" + idWeek + "')";
+        DataConnection.insertToDB(sqlQueryHistory);
     }
 
 }

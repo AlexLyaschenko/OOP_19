@@ -2,8 +2,8 @@ package com.univ.webService.DAO;
 
 import com.univ.webService.dataConnection.DataConnection;
 import com.univ.webService.dataModel.PeopleInTariff;
+import com.univ.webService.servlet.Constants;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,47 +13,23 @@ import java.util.List;
 
 public class PeopleInTariffDAO {
     public List<PeopleInTariff> getPeople(int idPeople, int idTariff, int numberOfPeople, int idWeek) {
+
+        final String sqlQuery = "SELECT * FROM PeopleInTariff WHERE idPeopleInTariff " +
+                (idPeople == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idPeople) +
+                " AND idTariff " + (idTariff == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idTariff) +
+                " AND numberOfPeople " + (numberOfPeople == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + numberOfPeople) +
+                " AND idWeek " + (idWeek == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idWeek);
+
         List<PeopleInTariff> getPeopleArr = new ArrayList<>();
-
         Connection connection = DataConnection.getDBConnection();
-
-        String sqlQueryPeopleInTariff = "SELECT * FROM PeopleInTariff Where";
-        if (idPeople == -1) {
-            sqlQueryPeopleInTariff += " idPeopleInTariff LIKE '%' ";
-        } else {
-            sqlQueryPeopleInTariff += " idPeopleInTariff = " + idPeople + " ";
-        }
-        sqlQueryPeopleInTariff += "AND";
-        if (idTariff == -1) {
-            sqlQueryPeopleInTariff += " idTariff LIKE '%' ";
-        } else {
-            sqlQueryPeopleInTariff += " idTariff = " + idTariff + " ";
-        }
-        sqlQueryPeopleInTariff += "AND";
-        if (numberOfPeople == -1) {
-            sqlQueryPeopleInTariff += " numberOfPeople LIKE '%' ";
-        } else {
-            sqlQueryPeopleInTariff += " numberOfPeople = " + numberOfPeople + " ";
-        }
-        sqlQueryPeopleInTariff += "AND";
-        if (idWeek == -1) {
-            sqlQueryPeopleInTariff += " idWeek LIKE '%'";
-        } else {
-            sqlQueryPeopleInTariff += " idWeek = " + idWeek;
-        }
-
         try {
-            PreparedStatement pstmt = connection.prepareStatement(sqlQueryPeopleInTariff);
+            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 PeopleInTariff people = new PeopleInTariff(rs.getInt("idPeopleInTariff"), rs.getInt("idTariff"),
                         rs.getInt("numberOfPeople"), rs.getInt("idWeek"));
                 getPeopleArr.add(people);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -42,13 +42,8 @@ public class DataConnection {
     public static void insertToDB(String sqlQuery) {
         Connection connection = DataConnection.getDBConnection();
         try {
-            PreparedStatement stat = connection.prepareStatement(sqlQuery);
-            stat.execute();
-        } catch (SQLException e) {
-            e.getMessage();
-            System.out.println(e.getMessage());
-        }
-        try {
+            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+            pstmt.execute();
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,15 +51,11 @@ public class DataConnection {
     }
 
     public static void updateDB(String sqlQuery) {
-        Connection conn = DataConnection.getDBConnection();
+        Connection connection = DataConnection.getDBConnection();
         try {
-            Statement stat = conn.createStatement();
-            stat.executeUpdate(sqlQuery);
-        } catch (SQLException e) {
-            e.getMessage();
-        }
-        try {
-            conn.close();
+            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+            pstmt.executeUpdate(sqlQuery);
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

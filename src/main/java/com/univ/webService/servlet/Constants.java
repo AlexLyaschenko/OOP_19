@@ -13,4 +13,11 @@ public class Constants {
     public static final String ABONENT = "Abonent";
     public static final String SHOW_PEOPLE_IN_REGION = "101";
     public static final String SHOW_PEOPLE_IN_TARIFF = "102";
+    public static final String SHOW_HISTORY = "103";
+    public static final int SELECT_ALL_INT = -1;
+    public static final String SELECT_ALL_STR = "";
+    public static final int IS_USER = 0;
+    public static final String EMPTY_FIELD = "";
+    public static final String ADD_TO_DB_BY_REGION = "103";
+    public static final String ADD_TO_DB_BY_TARIFF = "104";
 }

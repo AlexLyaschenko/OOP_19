@@ -2,80 +2,33 @@ package com.univ.webService.DAO;
 
 import com.univ.webService.dataConnection.DataConnection;
 import com.univ.webService.dataModel.Abonent;
+import com.univ.webService.servlet.Constants;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class AbonentDAO {
-    public List<Abonent> getAbonentFromDB(int idAbonent, String Name, String Surname, String phoneNumber, int idAreaCode,
-                                          int idBilling, String Login, String Password, int isAdmin) {
+    public List<Abonent> getAbonentFromDB(int idAbonent, String name, String surname, String phoneNumber, int idAreaCode,
+                                          int idBilling, String login, String password, int isAdmin) {
+
+        final String sqlQuery = "SELECT * FROM Abonent WHERE idAbonent " + (idAbonent == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idAbonent) +
+                " AND Name " + (name.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + name + "'") +
+                " AND Surname " + (surname.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + surname + "'") +
+                " AND phoneNumber " + (phoneNumber.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + phoneNumber + "'") +
+                " AND idAreaCode " + (idAreaCode == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idAreaCode) +
+                " AND idBilling " + (idBilling == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idBilling) +
+                " AND Login " + (login.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + login + "'") +
+                " AND Password " + (password.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + password + "'") +
+                " AND isAdmin " + (isAdmin == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + isAdmin);
+
 
         List<Abonent> getAbonentArr = new ArrayList<>();
-
-        Connection conn = DataConnection.getDBConnection();
-
-        String sqlQueryAbonent = "SELECT * FROM Abonent WHERE";
-        if (idAbonent == -1) {
-            sqlQueryAbonent += " idAbonent LIKE '%' ";
-        } else {
-            sqlQueryAbonent += " idAbonent = " + idAbonent + " ";
-        }
-        sqlQueryAbonent += "AND";
-        if (Name.equals("")) {
-            sqlQueryAbonent += " Name LIKE '%' ";
-        } else {
-            sqlQueryAbonent += " Name = '" + Name + "' ";
-        }
-        sqlQueryAbonent += "AND";
-        if (Surname.equals("")) {
-            sqlQueryAbonent += " Surname LIKE '%' ";
-        } else {
-            sqlQueryAbonent += " Surname = '" + Surname + "' ";
-        }
-        sqlQueryAbonent += "AND";
-        if (phoneNumber.equals("")) {
-            sqlQueryAbonent += " phoneNumber LIKE '%' ";
-        } else {
-            sqlQueryAbonent += " phoneNumber = '" + phoneNumber + "' ";
-        }
-        sqlQueryAbonent += "AND";
-        if (idAreaCode == -1) {
-            sqlQueryAbonent += " idAreaCode LIKE '%' ";
-        } else {
-            sqlQueryAbonent += " idAreaCode = " + idAreaCode + " ";
-        }
-        sqlQueryAbonent += "AND";
-        if (idBilling == -1) {
-            sqlQueryAbonent += " idBilling LIKE '%' ";
-        } else {
-            sqlQueryAbonent += " idBilling = " + idBilling + " ";
-        }
-        sqlQueryAbonent += "AND";
-        if (Login.equals("")) {
-            sqlQueryAbonent += " Login LIKE '%' ";
-        } else {
-            sqlQueryAbonent += " Login = '" + Login + "' ";
-        }
-        sqlQueryAbonent += "AND";
-        if (Password.equals("")) {
-            sqlQueryAbonent += " Password LIKE '%' ";
-        } else {
-            sqlQueryAbonent += " Password = '" + Password + "' ";
-        }
-        sqlQueryAbonent += "AND";
-        if (isAdmin == -1) {
-            sqlQueryAbonent += " isAdmin LIKE '%'";
-        } else {
-            sqlQueryAbonent += " isAdmin = " + isAdmin;
-        }
+        Connection connection = DataConnection.getDBConnection();
 
         try {
-            PreparedStatement pstmt = conn.prepareStatement(sqlQueryAbonent);
+            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Abonent abonent = new Abonent(rs.getInt("idAbonent"), rs.getString("Name"), rs.getString("Surname"),
@@ -83,11 +36,7 @@ public class AbonentDAO {
                         rs.getString("Login"), rs.getString("Password"), rs.getInt("isAdmin"));
                 getAbonentArr.add(abonent);
             }
-        } catch (SQLException e) {
-            e.getMessage();
-        }
-        try {
-            conn.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

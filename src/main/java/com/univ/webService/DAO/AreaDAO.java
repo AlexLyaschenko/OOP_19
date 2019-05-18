@@ -2,53 +2,31 @@ package com.univ.webService.DAO;
 
 import com.univ.webService.dataConnection.DataConnection;
 import com.univ.webService.dataModel.Area;
+import com.univ.webService.servlet.Constants;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AreaDAO {
     public List<Area> getAreaFromDB(int idArea, String nameArea) {
+
+        final String sqlQuery = "SELECT idArea, nameArea FROM Area WHERE idArea " + (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea) +
+                " AND nameArea " + (nameArea.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + nameArea + "'");
+
         List<Area> getAreaArr = new ArrayList<>();
-
-        Connection conn = DataConnection.getDBConnection();
-
-        String sqlQueryArea = "SELECT idArea, nameArea FROM Area WHERE";
-        if (idArea == -1) {
-            sqlQueryArea += " idArea LIKE '%' ";
-        } else {
-            sqlQueryArea += " idArea = " + idArea + " ";
-        }
-        sqlQueryArea += "AND";
-        if (nameArea.equals("")) {
-            sqlQueryArea += " nameArea LIKE '%'";
-        } else {
-            sqlQueryArea += " nameArea = '" + nameArea + "'";
-        }
-
+        Connection connection = DataConnection.getDBConnection();
         try {
-            Statement stat = conn.createStatement();
-            ResultSet rs = stat.executeQuery(sqlQueryArea);
+            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Area area = new Area(rs.getInt("idArea"), rs.getString("nameArea"));
                 getAreaArr.add(area);
             }
-        } catch (SQLException e) {
-            e.getMessage();
-        }
-        try {
-            conn.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return getAreaArr;
     }
 

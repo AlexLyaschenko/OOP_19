@@ -2,62 +2,31 @@ package com.univ.webService.DAO;
 
 import com.univ.webService.dataConnection.DataConnection;
 import com.univ.webService.dataModel.Tariff;
+import com.univ.webService.servlet.Constants;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TariffDAO {
-    public List<Tariff> getTariffFromDB(int idTariff, String nameTariff, int Price, int idArea) {
+    public List<Tariff> getTariffFromDB(int idTariff, String nameTariff, int price, int idArea) {
+
+        final String sqlQuery = "SELECT * FROM Tariff WHERE idTariff " + (idTariff == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idTariff) +
+                " AND nameTariff " + (nameTariff.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + nameTariff + "'") +
+                " AND Price " + (price == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + price) +
+                " AND idArea " + (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea);
+
         List<Tariff> getTariffArr = new ArrayList<>();
-
-        Connection conn = DataConnection.getDBConnection();
-
-        String sqlQueryTariff = "SELECT * FROM Tariff WHERE";
-        if (idTariff == -1) {
-            sqlQueryTariff += " idTariff LIKE '%' ";
-        } else {
-            sqlQueryTariff += " idTariff = " + idTariff + " ";
-        }
-        sqlQueryTariff += "AND";
-        if (nameTariff.equals("")) {
-            sqlQueryTariff += " nameTariff LIKE '%' ";
-        } else {
-            sqlQueryTariff += " nameTariff = '" + nameTariff + "' ";
-        }
-        sqlQueryTariff += "AND";
-        if (Price == -1) {
-            sqlQueryTariff += " Price LIKE '%' ";
-        } else {
-            sqlQueryTariff += " Price = " + Price + " ";
-        }
-        sqlQueryTariff += "AND";
-        if (idArea == -1) {
-            sqlQueryTariff += " idArea LIKE '%'";
-        } else {
-            sqlQueryTariff += " idArea = " + idArea;
-        }
-
+        Connection connection = DataConnection.getDBConnection();
         try {
-            Statement stat = conn.createStatement();
-            ResultSet rs = stat.executeQuery(sqlQueryTariff);
+            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Tariff tariff = new Tariff(rs.getInt("idTariff"), rs.getString("nameTariff"),
                         rs.getInt("Price"), rs.getInt("idArea"));
                 getTariffArr.add(tariff);
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
-            conn.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package com.univ.webService;
 
 import com.univ.webService.DAO.AbonentDAO;
 import com.univ.webService.DAO.HistoryDAO;
+import com.univ.webService.DAO.PeopleInRegionDAO;
 import com.univ.webService.DAO.PeopleInTariffDAO;
 import com.univ.webService.dataModel.PeopleInTariff;
 
@@ -21,8 +22,7 @@ public class Test {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date1);
         int week = cal.get(Calendar.WEEK_OF_YEAR);
-        PeopleInTariffDAO people = new PeopleInTariffDAO();
-        List<PeopleInTariff> arr = people.getPeople(-1,-1,-1,18);
-        System.out.println(arr.size());
+        PeopleInRegionDAO peopleInRegionDAO = new PeopleInRegionDAO();
+        peopleInRegionDAO.setUserToDB(123,123,123);
     }
 }
