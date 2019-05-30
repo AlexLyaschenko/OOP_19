@@ -1,6 +1,5 @@
 package JUnit;
 
-import com.univ.webService.servlet.HandlerServlet;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -8,8 +7,6 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import static org.junit.Assert.*;
 
 public class HandlerServletTest extends Mockito {
 

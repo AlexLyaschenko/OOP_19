@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BillingDAO {
-    public List<Billing> getBillingFromDB(int idBilling, int balance, int chargeAmount, String connectionDate, int idTariff, String status) {
+    public List<Billing> getBillingFromDB(int idBilling, int balance, int chargeAmount, String connectionDate, int idTariff, String status) throws SQLException {
 
         final String sqlQuery =
                 String.format(
@@ -24,7 +24,6 @@ public class BillingDAO {
                 );
         List<Billing> getBillingArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
-        try {
             PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -33,13 +32,11 @@ public class BillingDAO {
                 getBillingArr.add(billing);
             }
             connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
         return getBillingArr;
     }
 
-    public void updateBillingStatusDB(int idBilling, String status) {
+    public void updateBillingStatusDB(int idBilling, String status) throws SQLException {
         status = status.equals("disabled") ? "enabled" : "disabled";
         String sqlQuery =
                 String.format(
@@ -50,7 +47,7 @@ public class BillingDAO {
         DataConnection.updateDB(sqlQuery);
     }
 
-    public void updateBonusBillingDB(int idBilling, int bonus) {
+    public void updateBonusBillingDB(int idBilling, int bonus) throws SQLException {
         String sqlQuery =
                 String.format(
                         "UPDATE Billing SET chargeAmount = '%s' WHERE idBilling = '%s'",
@@ -60,7 +57,7 @@ public class BillingDAO {
         DataConnection.updateDB(sqlQuery);
     }
 
-    public void updateBalanceBillingDB(int idBilling, int balance) {
+    public void updateBalanceBillingDB(int idBilling, int balance) throws SQLException {
         String sqlQuery =
                 String.format(
                         "UPDATE Billing SET Balance = '%s' WHERE idBilling = '%s'",
@@ -70,7 +67,7 @@ public class BillingDAO {
         DataConnection.updateDB(sqlQuery);
     }
 
-    public void updateTariffIdBillingDB(int idBilling, int idTariff) {
+    public void updateTariffIdBillingDB(int idBilling, int idTariff) throws SQLException {
         String sqlQuery =
                 String.format(
                         "UPDATE Billing SET idTariff = '%s' WHERE idBilling = '%s'",
@@ -80,7 +77,7 @@ public class BillingDAO {
         DataConnection.updateDB(sqlQuery);
     }
 
-    public void updateConnectionDatedBillingDB(int idBilling, String time) {
+    public void updateConnectionDatedBillingDB(int idBilling, String time) throws SQLException {
         String sqlQuery =
                 String.format(
                         "UPDATE Billing SET connectionDate = '%s' WHERE idBilling = '%s'",

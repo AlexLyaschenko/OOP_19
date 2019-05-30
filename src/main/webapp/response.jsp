@@ -35,11 +35,11 @@
     <p>Tariff name - <c:out value="${sessionScope['nameTariff']}"/></p>
     <p>Tariff price - <c:out value="${sessionScope['priceTariff']}"/></p>
     <p>Status - <c:out value="${sessionScope['status']}"/></p>
-    <form method="post" action="main_page">
+    <form method="post" action="change-user-status">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.CHANGE_USER_STATUS}"/>>
         <button type="submit">change status</button>
     </form>
-    <form method="post" action="main_page">
+    <form method="post" action="login">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
         <button type="submit">go to the previous page</button>
     </form>
@@ -94,7 +94,7 @@
 
                 <c:if test="${tariff.getPrice() > (sessionScope['balance'] + sessionScope['chargeAmount'])}">
                     <td>
-                        <form method="post" action="main_page">
+                        <form method="post" action="change-user-tariff">
                             <input type="hidden" name="sessionId" id="sessionId" value=<c:out
                                     value="${Constants.CHANGE_TARIFF}"/>>
                             <input type="hidden" name="tarifId" id="tarifId" value="${tariff.getIdTariff()}">
@@ -104,7 +104,7 @@
                 </c:if>
                 <c:if test="${tariff.getPrice() <= (sessionScope['balance'] + sessionScope['chargeAmount'])}">
                     <td>
-                        <form method="post" action="main_page">
+                        <form method="post" action="change-user-tariff">
                             <input type="hidden" name="sessionId" id="sessionId" value=<c:out
                                     value="${Constants.CHANGE_TARIFF}"/>>
                             <input type="hidden" name="tarifId" id="tarifId" value="${tariff.getIdTariff()}">
@@ -129,7 +129,7 @@
     <br>
     <h1>Users</h1>
     <p>Show more info about user:</p>
-    <form method="get" action="main_page">
+    <form method="get" action="show-users">
         <input type="text" name="idAbonent" id="idAbonent-input" required="required" pattern="[1-9][0-9]{0,2}">
         <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_USERS}"/>>
         <button type="submit">submit</button>
@@ -150,123 +150,6 @@
             </tr>
         </c:forEach>
     </table>
-    <br>
-    <br>
-    <p>Show number of users in region by week</p>
-    <form method="get" action="main_page">
-        <input type="text" name="idWeek" id="idWeek" required="required" pattern="[1-9][0-9]{0,2}">
-        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_PEOPLE_IN_REGION}"/>>
-        <button type="submit">submit</button>
-    </form>
-    <br>
-    <br>
-    <p>Show number of users for each tariff by week</p>
-    <form method="get" action="main_page">
-        <input type="text" name="idWeek" id="idWeek" required="required" pattern="[1-9][0-9]{0,2}">
-        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_PEOPLE_IN_TARIFF}"/>>
-        <button type="submit">submit</button>
-    </form>
-    <br>
-    <br>
-    <p>Show history for each user by week</p>
-    <form method="get" action="main_page">
-        <input type="text" name="idWeek" id="idWeek" required="required" pattern="[1-9][0-9]{0,2}">
-        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.SHOW_HISTORY}"/>>
-        <button type="submit">submit</button>
-    </form>
-    <br>
-    <br>
-    <p>Add statistics of users by the region for the current week</p>
-    <form method="post" action="main_page">
-        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.ADD_TO_DB_BY_REGION}"/>>
-        <button type="submit">submit</button>
-    </form>
-    <br>
-    <br>
-    <p>Add statistics of users by the tariff for the current week</p>
-    <form method="post" action="main_page">
-        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.ADD_TO_DB_BY_TARIFF}"/>>
-        <button type="submit">submit</button>
-    </form>
-</c:if>
-<c:if test="${sessionId eq Constants.SHOW_PEOPLE_IN_REGION}">
-    <c:if test="${requestScope['numberOfPeopleArr'].size() == 0}">
-        <h2>Incorrect week, please try again</h2>
-    </c:if>
-    <c:if test="${requestScope['numberOfPeopleArr'].size() != 0}">
-        <table>
-            <tr>
-                <td>Week number</td>
-                <td>Area id</td>
-                <td>Number of users</td>
-            </tr>
-            <c:forEach items="${requestScope['numberOfPeopleArr']}" var="people">
-                <tr>
-                    <td><c:out value="${people.getIdWeek()}"/></td>
-                    <td><c:out value="${people.getIdArea()}"/></td>
-                    <td><c:out value="${people.getNumberOfPeople()}"/></td>
-                </tr>
-            </c:forEach>
-        </table>
-    </c:if>
-    <form method="post" action="main_page">
-        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
-        <button type="submit">go to the previous page</button>
-    </form>
-</c:if>
-<c:if test="${sessionId eq Constants.SHOW_PEOPLE_IN_TARIFF}">
-    <c:if test="${requestScope['peopleInTariffArr'].size() == 0}">
-        <h2>Incorrect week, please try again</h2>
-    </c:if>
-    <c:if test="${requestScope['peopleInTariffArr'].size() != 0}">
-        <table>
-            <tr>
-                <td>Week number</td>
-                <td>idTariff</td>
-                <td>Number of users</td>
-            </tr>
-            <c:forEach items="${requestScope['peopleInTariffArr']}" var="people">
-                <tr>
-                    <td><c:out value="${people.getIdWeek()}"/></td>
-                    <td><c:out value="${people.getIdTariff()}"/></td>
-                    <td><c:out value="${people.getNumberOfPeople()}"/></td>
-                </tr>
-            </c:forEach>
-        </table>
-    </c:if>
-    <form method="post" action="main_page">
-        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
-        <button type="submit">go to the previous page</button>
-    </form>
-</c:if>
-<c:if test="${sessionId eq Constants.SHOW_HISTORY}">
-    <c:if test="${requestScope['historyArr'].size() == 0}">
-        <h2>Incorrect week, please try again</h2>
-    </c:if>
-    <c:if test="${requestScope['historyArr'].size() != 0}">
-        <table>
-            <tr>
-                <td>Week number</td>
-                <td>idAbonent</td>
-                <td>Tariff</td>
-                <td>Status</td>
-                <td>Time</td>
-            </tr>
-            <c:forEach items="${requestScope['historyArr']}" var="history">
-                <tr>
-                    <td><c:out value="${history.getIdWeek()}"/></td>
-                    <td><c:out value="${history.getIdAbonent()}"/></td>
-                    <td><c:out value="${history.getTariffName()}"/></td>
-                    <td><c:out value="${history.getStatus()}"/></td>
-                    <td><c:out value="${history.getDate()}"/></td>
-                </tr>
-            </c:forEach>
-        </table>
-    </c:if>
-    <form method="post" action="main_page">
-        <input type="hidden" name="sessionId" id="sessionId" value=<c:out value="${Constants.LOGIN_ACCOUNT}"/>>
-        <button type="submit">go to the previous page</button>
-    </form>
 </c:if>
 </body>
 </html>

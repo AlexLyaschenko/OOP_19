@@ -11,13 +11,8 @@ public class DataConnection {
 
     private static final DataSource datasource = createDataSource();
 
-    public static Connection getDBConnection() {
-        try {
-            return datasource.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static Connection getDBConnection() throws SQLException {
+        return datasource.getConnection();
     }
 
     private static DataSource createDataSource() {
@@ -39,25 +34,19 @@ public class DataConnection {
         return properties;
     }
 
-    public static void insertToDB(String sqlQuery) {
+    public static void insertToDB(String sqlQuery) throws SQLException {
         Connection connection = DataConnection.getDBConnection();
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-            pstmt.execute();
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+        pstmt.execute();
+        connection.close();
+
     }
 
-    public static void updateDB(String sqlQuery) {
+    public static void updateDB(String sqlQuery) throws SQLException {
         Connection connection = DataConnection.getDBConnection();
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-            pstmt.executeUpdate(sqlQuery);
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+        pstmt.executeUpdate(sqlQuery);
+        connection.close();
+
     }
 }

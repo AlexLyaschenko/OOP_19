@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="css/loginStyle.css">
 </head>
 <body>
-<form method="post" action="main_page">
+<form method="post" action="login">
     <div>
         <p>
             <label for="login-input">Login:</label>

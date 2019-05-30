@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AreaDAO {
-    public List<Area> getAreaFromDB(int idArea, String nameArea) {
+    public List<Area> getAreaFromDB(int idArea, String nameArea) throws SQLException {
 
         final String sqlQuery =
                 String.format(
@@ -20,7 +20,6 @@ public class AreaDAO {
                 );
         List<Area> getAreaArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
-        try {
             PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -28,9 +27,7 @@ public class AreaDAO {
                 getAreaArr.add(area);
             }
             connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
         return getAreaArr;
     }
 

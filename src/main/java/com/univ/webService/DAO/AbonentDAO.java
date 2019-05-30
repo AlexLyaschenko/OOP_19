@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class AbonentDAO {
     public List<Abonent> getAbonentFromDB(int idAbonent, String name, String surname, String phoneNumber, int idAreaCode,
-                                          int idBilling, String login, String password, int isAdmin) {
+                                          int idBilling, String login, String password, int isAdmin) throws SQLException {
         List<Abonent> getAbonentArr = new ArrayList<>();
         Connection connection = DataConnection.getDBConnection();
         final String sqlQuery =
@@ -28,7 +28,6 @@ public class AbonentDAO {
                         password.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + password + "'",
                         isAdmin == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + isAdmin
                 );
-        try {
             PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
             ResultSet rs = pstmt.
                     executeQuery();
@@ -39,9 +38,6 @@ public class AbonentDAO {
                 getAbonentArr.add(abonent);
             }
             connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return getAbonentArr;
     }
 }

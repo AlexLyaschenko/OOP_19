@@ -7,12 +7,13 @@ import com.univ.webService.servlet.Constants;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 public class Service {
-    public static void loginAccount(HttpSession session, HttpServletRequest request) {
+    public static void loginAccount(HttpSession session, HttpServletRequest request) throws SQLException {
         AbonentDAO abonentDAO = new AbonentDAO();
         String pass;
         String login;
@@ -53,7 +54,7 @@ public class Service {
         }
     }
 
-    public static void showUserInfo(HttpSession session, HttpServletRequest request) {
+    public static void showUserInfo(HttpSession session, HttpServletRequest request) throws SQLException {
         int idAbonent;
         AbonentDAO abonentDAO = new AbonentDAO();
         try {
@@ -94,17 +95,14 @@ public class Service {
         session.setAttribute("sessionId", Constants.SHOW_USER_BY_ID);
     }
 
-    public static void changeUserStatus(HttpSession session, HttpServletRequest request) {
+    public static void changeUserStatus(HttpSession session, HttpServletRequest request) throws SQLException {
         BillingDAO billingDAO = new BillingDAO();
         billingDAO.updateBillingStatusDB(Integer.parseInt(session.getAttribute("billingId").toString()), session.getAttribute("status").toString());
-        addChangesToHistory(Integer.parseInt(session.getAttribute("idAbonent").toString()), session.getAttribute("nameTariff").toString(),
-                "status has been changed (was " + session.getAttribute("status") + ")", new java.util.Date().toString(), getCurrentWeek());
-
         session.setAttribute("sessionId", "109Admin");
         showUserInfo(session, request);
     }
 
-    public static void changeTariff(HttpSession session, HttpServletRequest request) {
+    public static void changeTariff(HttpSession session, HttpServletRequest request) throws SQLException {
         TariffDAO tariffDAO = new TariffDAO();
         BillingDAO billingDAO = new BillingDAO();
         Tariff tariff = tariffDAO.getTariffFromDB(Integer.parseInt(request.getParameter("tarifId")), Constants.SELECT_ALL_STR,
@@ -135,78 +133,10 @@ public class Service {
             Exception e = new Exception();
             e.printStackTrace();
         }
-        addChangesToHistory(Integer.parseInt(session.getAttribute("idAbonent").toString()), "tariff has been changed (was \"" +
-                currentTariffName + "\", and now \"" + nextTariff + "\")", currentStatus, new java.util.Date().toString(), getCurrentWeek());
         loginAccount(session, request);
     }
 
-    public static void showPeopleInRegion(HttpServletRequest request) {
-        PeopleInRegionDAO peopleDAO = new PeopleInRegionDAO();
-        List<PeopleInRegion> numberOfPeopleArr = peopleDAO.getPeopleFromDB(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT,
-                Constants.SELECT_ALL_INT, Integer.parseInt(request.getParameter("idWeek")));
-        request.setAttribute("numberOfPeopleArr", numberOfPeopleArr);
-    }
-
-    public static void showPeopleInTariff(HttpServletRequest request) {
-        PeopleInTariffDAO peopelDAO = new PeopleInTariffDAO();
-        List<PeopleInTariff> peopleInTariffArr = peopelDAO.getPeople(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT,
-                Constants.SELECT_ALL_INT, Integer.parseInt(request.getParameter("idWeek")));
-        request.setAttribute("peopleInTariffArr", peopleInTariffArr);
-    }
-
-    public static void showHistoryByWeek(HttpServletRequest request) {
-        HistoryDAO history = new HistoryDAO();
-        List<History> historyArr = history.getHistoryFromDB(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT,
-                Integer.parseInt(request.getParameter("idWeek")));
-        request.setAttribute("historyArr", historyArr);
-
-    }
-
-    public static void addToPeopleInRegionDB(HttpSession session, HttpServletRequest request) {
-        AbonentDAO abonentDAO = new AbonentDAO();
-        List<Abonent> abonentArr = abonentDAO.getAbonentFromDB(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_STR,
-                Constants.SELECT_ALL_STR, Constants.SELECT_ALL_STR, Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT,
-                Constants.SELECT_ALL_STR, Constants.SELECT_ALL_STR, Constants.SELECT_ALL_INT);
-        int[] numberOfPeople = new int[3];
-        for (int i = 0; i < abonentArr.size(); i++) {
-            if (abonentArr.get(i).getIsAdmin() == 1) continue;
-            numberOfPeople[abonentArr.get(i).getIdAreaCode() - 1]++;
-        }
-        PeopleInRegionDAO peopleInRegionDAO = new PeopleInRegionDAO();
-        if (peopleInRegionDAO.getPeopleFromDB(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT,
-                getCurrentWeek()).size() != 0) {
-            loginAccount(session, request);
-            return;
-        }
-        for (int i = 0; i < 3; i++) {
-            peopleInRegionDAO.setUserToDB(i + 1, numberOfPeople[i], getCurrentWeek());
-        }
-        loginAccount(session, request);
-    }
-
-    public static void addToPeopleInTariffDB(HttpSession session, HttpServletRequest request) {
-        BillingDAO billingDAO = new BillingDAO();
-        List<Billing> billingArr = billingDAO.getBillingFromDB(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT,
-                Constants.SELECT_ALL_INT, Constants.SELECT_ALL_STR, Constants.SELECT_ALL_INT, Constants.SELECT_ALL_STR);
-        int[] numberOfPeople = new int[billingArr.size()];
-        for (int i = 0; i < billingArr.size(); i++) {
-            if (billingArr.get(i).getIdTariff() == -2) continue;
-            numberOfPeople[billingArr.get(i).getIdBilling() - 1]++;
-        }
-        PeopleInTariffDAO peopleInTariffDAO = new PeopleInTariffDAO();
-        if (peopleInTariffDAO.getPeople(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT, getCurrentWeek()).size() != 0) {
-            loginAccount(session, request);
-            return;
-        }
-        for (int i = 0; i < billingArr.size(); i++) {
-            if (numberOfPeople[i] == 0) continue;
-            peopleInTariffDAO.setUserToDB(Integer.parseInt("" + getCurrentWeek() + (i + 1)), billingArr.get(i).getIdTariff(),
-                    numberOfPeople[i], getCurrentWeek());
-        }
-        loginAccount(session, request);
-    }
-
-    private static void showAvailablePackages(HttpSession session, HttpServletRequest request) {
+    private static void showAvailablePackages(HttpSession session, HttpServletRequest request) throws SQLException {
         int billingId = Integer.parseInt(session.getAttribute("billingId").toString());
         BillingDAO billingDAO = new BillingDAO();
         Billing billing = billingDAO.getBillingFromDB(billingId, Constants.SELECT_ALL_INT, Constants.SELECT_ALL_INT,
@@ -225,10 +155,6 @@ public class Service {
         request.setAttribute("tariffs", tariffs);
     }
 
-    private static void addChangesToHistory(int idAbonent, String tariffName, String status, String date, int idWeek) {
-        HistoryDAO history = new HistoryDAO();
-        history.setHistoryToDB(idAbonent, tariffName, status, date, idWeek);
-    }
 
     private static int getCurrentWeek() {
         return Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
