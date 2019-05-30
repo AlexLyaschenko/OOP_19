@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: org.mockito:   mockito-core:1.9.5">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/Could not find org.mockito:   mockito-core:1.9.5.&#10;Searched in the following locations:&#10;  - https:/repo.maven.apache.org/maven2/org/mockito/   mockito-core/1.9.5/   mockito-core-1.9.5.pom&#10;  - https:/repo.maven.apache.org/maven2/org/mockito/   mockito-core/1.9.5/   mockito-core-1.9.5.jar&#10;  - https:/jcenter.bintray.com/org/mockito/   mockito-core/1.9.5/   mockito-core-1.9.5.pom&#10;  - https:/jcenter.bintray.com/org/mockito/   mockito-core/1.9.5/   mockito-core-1.9.5.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
