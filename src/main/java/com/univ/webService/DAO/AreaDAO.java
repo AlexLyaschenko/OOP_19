@@ -9,13 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AreaDAO {
-    public List<Area> getAreaFromDB(int idArea, String nameArea) throws SQLException {
+    public List<Area> getAreaFromDB(int idArea) throws SQLException {
 
         final String sqlQuery =
                 String.format(
-                        "SELECT idArea, nameArea FROM Area WHERE idArea %s AND nameArea %s",
-                        (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea),
-                        (nameArea.equals(Constants.SELECT_ALL_STR) ? "LIKE '%'" : "= '" + nameArea + "'")
+                        "SELECT idArea, nameArea FROM Area WHERE idArea %s",
+                        (idArea == Constants.SELECT_ALL_INT ? "LIKE '%'" : "= " + idArea)
 
                 );
         List<Area> getAreaArr = new ArrayList<>();

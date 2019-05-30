@@ -1,6 +1,6 @@
 package com.univ.webService.servlet;
 
-import com.univ.webService.businessLogic.Service;
+import com.univ.webService.businessLogic.LoginService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +20,7 @@ public class LoginServlet extends HttpServlet {
         if (request.getParameter("sessionId") != null)
             session.setAttribute("sessionId", request.getParameter("sessionId"));
         try {
-            Service.loginAccount(session, request);
+            LoginService.loginAccount(session, request);
         } catch (SQLException e) {
             request.getRequestDispatcher("Error.jsp").forward(request, response);
         }

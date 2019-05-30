@@ -1,6 +1,6 @@
 package com.univ.webService.servlet;
 
-import com.univ.webService.businessLogic.Service;
+import com.univ.webService.businessLogic.ChangeService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +17,7 @@ public class ChangeTariffServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
-            Service.changeTariff(session, request);
+            ChangeService.changeTariff(session, request);
         } catch (SQLException e) {
             request.getRequestDispatcher("Error.jsp").forward(request, response);
         }

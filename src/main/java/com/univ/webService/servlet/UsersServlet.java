@@ -1,6 +1,6 @@
 package com.univ.webService.servlet;
 
-import com.univ.webService.businessLogic.Service;
+import com.univ.webService.businessLogic.ShowService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +17,7 @@ public class UsersServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
-            Service.showUserInfo(session, request);
+            ShowService.showUserInfo(session, request);
         } catch (SQLException e) {
             request.getRequestDispatcher("Error.jsp").forward(request, response);
         }
