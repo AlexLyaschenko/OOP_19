@@ -11,7 +11,8 @@ public class Abonent {
     private String password;
     private int isAdmin;
 
-    public Abonent() {}
+    public Abonent() {
+    }
 
     public Abonent(int idAbonent, String name, String surname, String phoneNumber, int idAreaCode,
                    int idBilling, String login, String password, int isAdmin) {
@@ -25,6 +26,7 @@ public class Abonent {
         this.password = password;
         this.isAdmin = isAdmin;
     }
+
     public String getLogin() {
         return login;
     }

@@ -34,13 +34,6 @@ public class DataConnection {
         return properties;
     }
 
-    public static void insertToDB(String sqlQuery) throws SQLException {
-        Connection connection = DataConnection.getDBConnection();
-        PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-        pstmt.execute();
-        connection.close();
-
-    }
 
     public static void updateDB(String sqlQuery) throws SQLException {
         Connection connection = DataConnection.getDBConnection();

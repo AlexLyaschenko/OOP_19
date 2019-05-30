@@ -1,6 +1,7 @@
 package com.univ.webService.servlet;
 
 import com.univ.webService.businessLogic.ChangeService;
+import com.univ.webService.factory.BeanFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +18,7 @@ public class ChangeUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
-            ChangeService.changeUserStatus(session, request);
+            ((ChangeService) BeanFactory.getBean(ChangeService.class)).changeUserStatus(session, request);
         } catch (SQLException e) {
             request.getRequestDispatcher("Error.jsp").forward(request, response);
         }

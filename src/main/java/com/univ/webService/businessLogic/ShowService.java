@@ -17,7 +17,7 @@ import java.sql.SQLException;
 
 public class ShowService {
 
-    public static void showUserInfo(HttpSession session, HttpServletRequest request) throws SQLException {
+    public void showUserInfo(HttpSession session, HttpServletRequest request) throws SQLException {
         int idAbonent;
         AbonentDAO abonentDAO = (AbonentDAO) BeanFactory.getBean(AbonentDAO.class);
         try {
@@ -31,7 +31,7 @@ public class ShowService {
             abonent = abonentDAO.getAbonentFromDB(idAbonent, Constants.SELECT_ALL_STR, Constants.SELECT_ALL_STR, Constants.IS_USER).get(0);
         } catch (Exception e) {
             session.setAttribute("sessoinId", Constants.LOGIN_ACCOUNT);
-            LoginService.loginAccount(session, request);
+            ((LoginService) BeanFactory.getBean(LoginService.class)).loginAccount(session, request);
             return;
         }
         AreaDAO areaDAO = (AreaDAO) BeanFactory.getBean(AreaDAO.class);
@@ -40,6 +40,7 @@ public class ShowService {
         Billing billing = billingDao.getBillingFromDB(abonent.getIdBilling()).get(0);
         TariffDAO tariffDAO = (TariffDAO) BeanFactory.getBean(TariffDAO.class);
         Tariff tariff = tariffDAO.getTariffFromDB(billing.getIdTariff(), Constants.SELECT_ALL_INT).get(0);
+
         session.setAttribute("nameTariff", tariff.getNameTariff());
         session.setAttribute("priceTariff", tariff.getPrice());
         session.setAttribute("balance", billing.getBalance());

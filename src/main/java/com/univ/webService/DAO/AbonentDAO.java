@@ -7,7 +7,6 @@ import com.univ.webService.servlet.Constants;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class AbonentDAO {
     public List<Abonent> getAbonentFromDB(int idAbonent, String login, String password, int isAdmin) throws SQLException {

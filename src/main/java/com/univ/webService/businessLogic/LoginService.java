@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class LoginService {
-    public static void loginAccount(HttpSession session, HttpServletRequest request) throws SQLException {
+    public void loginAccount(HttpSession session, HttpServletRequest request) throws SQLException {
         AbonentDAO abonentDAO = (AbonentDAO) BeanFactory.getBean(AbonentDAO.class);
         String pass;
         String login;
