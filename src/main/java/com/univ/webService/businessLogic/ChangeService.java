@@ -1,5 +1,7 @@
 package com.univ.webService.businessLogic;
 
+import com.univ.webService.DAO.AbonentDAO;
+import com.univ.webService.DAO.AreaDAO;
 import com.univ.webService.DAO.BillingDAO;
 import com.univ.webService.DAO.TariffDAO;
 import com.univ.webService.dataModel.Tariff;
@@ -13,33 +15,37 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 public class ChangeService {
-    public void changeUserStatus(HttpSession session, HttpServletRequest request) throws SQLException {
-        BillingDAO billingDAO = (BillingDAO) BeanFactory.getBean(BillingDAO.class);
-        billingDAO.updateBillingStatusDB(Integer.parseInt(session.getAttribute("billingId").toString()), session.getAttribute("status").toString());
+    public void changeUserStatus(HttpSession session, HttpServletRequest request, int billingId, String status,
+                                 int idAbonent, String pass, String login, BillingDAO billingDAO) throws SQLException {
+        billingDAO.updateBillingStatusDB(billingId, status);
         session.setAttribute("sessionId", "109Admin");
-        ((ShowService) BeanFactory.getBean(ShowService.class)).showUserInfo(session, request);
+        ((ShowService) BeanFactory.getBean(ShowService.class)).showUserInfo(session, request,
+                idAbonent, pass, login, ((AbonentDAO) BeanFactory.getBean(AbonentDAO.class)),
+                ((AreaDAO) BeanFactory.getBean(AreaDAO.class)), ((BillingDAO) BeanFactory.getBean(BillingDAO.class)),
+                ((TariffDAO) BeanFactory.getBean(TariffDAO.class)));
     }
 
-    public void changeTariff(HttpSession session, HttpServletRequest request) throws SQLException {
+    public void changeTariff(HttpSession session, HttpServletRequest request, int tarifId, int balance, int bonus,
+                             int billingId, String login, String pass) throws SQLException {
         TariffDAO tariffDAO = (TariffDAO) BeanFactory.getBean(TariffDAO.class);
         BillingDAO billingDAO = (BillingDAO) BeanFactory.getBean(BillingDAO.class);
 
-        Tariff tariff = tariffDAO.getTariffFromDB(Integer.parseInt(request.getParameter("tarifId")), Constants.SELECT_ALL_INT).get(0);
-        int balance = Integer.parseInt(session.getAttribute("balance").toString());
-        int bonus = Integer.parseInt(session.getAttribute("chargeAmount").toString());
+        Tariff tariff = tariffDAO.getTariffFromDB(tarifId, Constants.SELECT_ALL_INT).get(0);
         if (bonus >= tariff.getPrice()) {
             bonus -= tariff.getPrice();
         } else {
             balance -= (tariff.getPrice() - bonus);
             bonus = 0;
-            billingDAO.updateBalanceBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), balance);
+            billingDAO.updateBalanceBillingDB(billingId, balance);
         }
-        billingDAO.updateBonusBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), bonus);
-        billingDAO.updateTariffIdBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()), tariff.getIdTariff());
-        billingDAO.updateConnectionDatedBillingDB(Integer.parseInt(session.getAttribute("billingId").toString()),
+        billingDAO.updateBonusBillingDB(billingId, bonus);
+        billingDAO.updateTariffIdBillingDB(billingId, tariff.getIdTariff());
+        billingDAO.updateConnectionDatedBillingDB(billingId,
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
         session.setAttribute("sessionId", Constants.ID_USER);
-        ((LoginService) BeanFactory.getBean(LoginService.class)).loginAccount(session, request);
+        ((LoginService) BeanFactory.getBean(LoginService.class)).loginAccount(session, request,
+                pass, login,
+                ((AbonentDAO) BeanFactory.getBean(AbonentDAO.class)));
     }
 
 }

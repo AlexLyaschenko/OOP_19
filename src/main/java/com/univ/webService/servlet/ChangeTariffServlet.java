@@ -18,7 +18,14 @@ public class ChangeTariffServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
-            ((ChangeService) BeanFactory.getBean(ChangeService.class)).changeTariff(session, request);
+            int tarifId = Integer.parseInt(request.getParameter("tarifId"));
+            int balance = Integer.parseInt(session.getAttribute("balance").toString());
+            int bonuce = Integer.parseInt(session.getAttribute("chargeAmount").toString());
+            int billingId = Integer.parseInt(session.getAttribute("billingId").toString());
+            String pass = session.getAttribute("pass").toString();
+            String login = session.getAttribute("login").toString();
+            ((ChangeService) BeanFactory.getBean(ChangeService.class)).changeTariff(session, request, tarifId, balance,
+                    bonuce, billingId, login, pass);
         } catch (SQLException e) {
             request.getRequestDispatcher("Error.jsp").forward(request, response);
         }

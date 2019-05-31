@@ -15,19 +15,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class LoginService {
-    public void loginAccount(HttpSession session, HttpServletRequest request) throws SQLException {
-        AbonentDAO abonentDAO = (AbonentDAO) BeanFactory.getBean(AbonentDAO.class);
-        String pass;
-        String login;
-        try {
-            pass = checkValidation(checkXSS(request.getParameter("pass").equals(Constants.EMPTY_FIELD) ? "," : request.getParameter("pass")));
-            login = checkValidation(checkXSS(request.getParameter("login")));
-        } catch (Exception e) {
-            pass = session.getAttribute("pass").toString();
-            login = session.getAttribute("login").toString();
-        }
-        session.setAttribute("pass", pass);
-        session.setAttribute("login", login);
+    public void loginAccount(HttpSession session, HttpServletRequest request, String pass, String login, AbonentDAO abonentDAO) throws SQLException {
+
         List<Abonent> abonentArr = abonentDAO.getAbonentFromDB(Constants.SELECT_ALL_INT, login, pass, Constants.SELECT_ALL_INT);
         if (abonentArr.size() == 1) {
             Abonent abonent = abonentArr.get(0);
@@ -44,7 +33,8 @@ public class LoginService {
             } else {
                 session.setAttribute("sessionId", Constants.ID_ADMIN);
                 session.setAttribute("type", "Admin");
-                List<Abonent> userArr = abonentDAO.getAbonentFromDB(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_STR, Constants.SELECT_ALL_STR, Constants.IS_USER);
+                List<Abonent> userArr = abonentDAO.getAbonentFromDB(Constants.SELECT_ALL_INT, Constants.SELECT_ALL_STR,
+                        Constants.SELECT_ALL_STR, Constants.IS_USER);
                 request.setAttribute("abonentArr", userArr);
             }
         } else {
@@ -69,19 +59,6 @@ public class LoginService {
                 Integer.parseInt(session.getAttribute("areaCode").toString()));
         session.setAttribute("tariffs", tariffs);
         request.setAttribute("tariffs", tariffs);
-    }
-
-
-    private static String checkXSS(String s) {
-        return s.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").
-                replaceAll("'", "&apos;").replaceAll("&", "&amp;");
-    }
-
-    private static String checkValidation(String s) {
-        if (s.matches("^[A-Za-z0-9]{1,35}")) {
-            return s;
-        }
-        return ",";
     }
 
 }

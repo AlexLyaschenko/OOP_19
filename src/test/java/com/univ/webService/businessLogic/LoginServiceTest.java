@@ -12,13 +12,14 @@ import static org.mockito.Mockito.*;
 class LoginServiceTest {
 
     private AbonentDAO abonentDAO = mock(AbonentDAO.class);
+
     private HttpServletRequest request = mock(HttpServletRequest.class);
-    private HttpSession session = request.getSession();
+    private HttpSession session = mock(HttpSession.class);
     private LoginService loginService = new LoginService();
 
     @Test
     void sessionCanBeSaved() throws SQLException {
-        loginService.loginAccount(session, request);
-        verify(abonentDAO).getAbonentFromDB(any(), any(), any(), any());
+        loginService.loginAccount(session, request, "admin", "admin", abonentDAO);
+        verify(abonentDAO).getAbonentFromDB(-1, "admin", "admin", -1);
     }
 }

@@ -1,7 +1,9 @@
 package com.univ.webService.servlet;
 
+import com.univ.webService.DAO.AbonentDAO;
 import com.univ.webService.businessLogic.LoginService;
 import com.univ.webService.factory.BeanFactory;
+import com.univ.webService.validation.Validation;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,8 +22,22 @@ public class LoginServlet extends HttpServlet {
         if (session.getAttribute("sessionId") == null) session.setAttribute("sessionId", Constants.LOGIN_ACCOUNT);
         if (request.getParameter("sessionId") != null)
             session.setAttribute("sessionId", request.getParameter("sessionId"));
+        String pass;
+        String login;
         try {
-            ((LoginService) BeanFactory.getBean(LoginService.class)).loginAccount(session, request);
+            pass = request.getParameter("pass").equals(Constants.EMPTY_FIELD) ? "," : request.getParameter("pass");
+            login = request.getParameter("login");
+        } catch (Exception e) {
+            pass = session.getAttribute("pass").toString();
+            login = session.getAttribute("login").toString();
+        }
+        pass = Validation.checkValidation(Validation.checkXSS(pass));
+        login = Validation.checkValidation(Validation.checkXSS(login));
+        session.setAttribute("pass", pass);
+        session.setAttribute("login", login);
+        try {
+            AbonentDAO abonentDAO = (AbonentDAO) BeanFactory.getBean(AbonentDAO.class);
+            ((LoginService) BeanFactory.getBean(LoginService.class)).loginAccount(session, request, pass, login, abonentDAO);
         } catch (SQLException e) {
             request.getRequestDispatcher("Error.jsp").forward(request, response);
         }

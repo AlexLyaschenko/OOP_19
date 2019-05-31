@@ -1,5 +1,6 @@
 package com.univ.webService.servlet;
 
+import com.univ.webService.DAO.BillingDAO;
 import com.univ.webService.businessLogic.ChangeService;
 import com.univ.webService.factory.BeanFactory;
 
@@ -18,7 +19,13 @@ public class ChangeUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
-            ((ChangeService) BeanFactory.getBean(ChangeService.class)).changeUserStatus(session, request);
+            int billingId = Integer.parseInt(session.getAttribute("billingId").toString());
+            int idAbonent = Integer.parseInt(session.getAttribute("idAbonent").toString());
+            String status = session.getAttribute("status").toString();
+            String pass = session.getAttribute("pass").toString();
+            String login = session.getAttribute("login").toString();
+            ((ChangeService) BeanFactory.getBean(ChangeService.class)).changeUserStatus(session, request, billingId,
+                    status, idAbonent, pass, login, ((BillingDAO) BeanFactory.getBean(BillingDAO.class)));
         } catch (SQLException e) {
             request.getRequestDispatcher("Error.jsp").forward(request, response);
         }
